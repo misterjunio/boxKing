@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('calendar');
 });
+
+Route::get('/calendar', ['as' => 'calendar', function () {
+    return view('calendar');
+}]);
