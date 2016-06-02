@@ -153,7 +153,7 @@ $(document).ready(function() {
 
       return {
          events : [
-            /*{
+            {
                "id":1,
                "start": new Date(year, month, day, 12),
                "end": new Date(year, month, day, 13, 30),
@@ -188,14 +188,14 @@ $(document).ready(function() {
                "start": new Date(year, month, day, 10),
                "end": new Date(year, month, day, 11),
                "title":"I'm read-only",
-               readOnly : true
+               readOnly:true
             },
             {
                "id":7,
                "start": new Date(year, month, day + 2, 17),
                "end": new Date(year, month, day + 3, 9),
                "title":"Multiday"
-            }*/
+            }
          ]
       };
    }

@@ -13,7 +13,7 @@
 		<script type='text/javascript' src="{{asset('js/demo.js')}}"></script>
 	</head>
 	<body>
-		<h1>jQuery Week Calendar (full demo)</h1>
+		<h1>OlimpusBox</h1>
 		<div id="about_button_container">
 			<div id="switcher"></div>
 			<button type="button" id="about_button">About this demo</button>
