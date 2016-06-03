@@ -9,13 +9,13 @@
 		<link rel='stylesheet' type='text/css' href="{{asset('css/reset.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('libs/css/smoothness/jquery-ui-1.8.11.custom.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('css/jquery.weekcalendar.css')}}" />
-		<link rel='stylesheet' type='text/css' href="{{asset('css/demo.css')}}" />
+		<link rel='stylesheet' type='text/css' href="{{asset('css/boxKing.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('css/default.css')}}" />
-		<script type='text/javascript' src="{{asset('libs/jquery-1.5.min.js')}}"></script>
+		<script type='text/javascript' src="{{asset('libs/jquery-1.4.4.min.js')}}"></script>
 		<script type='text/javascript' src="{{asset('libs/jquery-ui-1.8.11.custom.min.js')}}"></script>
 		<script type='text/javascript' src="{{asset('js/date.js')}}"></script>
 		<script type='text/javascript' src="{{asset('js/jquery.weekcalendar.js')}}"></script>
-		<script type='text/javascript' src="{{asset('js/demo.js')}}"></script>
+		<script type='text/javascript' src="{{asset('js/boxKing.js')}}"></script>
 	</head>
 	<body id="app-layout">
 		<h1><a href="{{ url('/') }}">OlimpusBox</a> @ BoxKing</h1>

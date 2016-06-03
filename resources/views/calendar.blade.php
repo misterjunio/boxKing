@@ -25,8 +25,12 @@
 					</select>
 				</li>
 				<li>
-					<label for="title">Title:</label>
+					<label for="title">Type:</label>
 					<input type="text" name="title" />
+				</li>
+				<li>
+					<label for="max_p">Max. people:</label>
+					<input type="number" name="max_p" min="1" value="15" />
 				</li>
 			</ul>
 		</form>

@@ -26,3 +26,17 @@ Route::get('/fetch_lessons', function () {
 
 	return Response::json($data);
 });
+
+Route::post('/store_lessons', function () {
+	$lesson = Request::input('lesson');
+	$start_at = new DateTime();
+	$start_at->setTimestamp($lesson['start_at']);
+	$end_at = new DateTime();
+	$end_at->setTimestamp($lesson['end_at']);
+	DB::table('lessons')->insert(
+		['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
+		 'max_participants' => intval($lesson['max_participants']),
+		 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]
+	);
+	return Response::json(['data' => $lesson]);
+});

@@ -18,7 +18,7 @@ class CreateLessonsTable extends Migration
 						$table->dateTimeTz('end_at');
 						$table->string('type');
 						$table->integer('max_participants');
-						$table->integer('no_participants');
+						$table->integer('no_participants')->default(0);
             $table->timestamps();
         });
     }

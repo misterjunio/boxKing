@@ -39,7 +39,7 @@ class CalendarController extends Controller
 	public function show(Request $request)
 	{
 			return view('calendar', [
-            'lessons' => $this->lessons->forUser($request->user()),
-        ]);
+					'lessons' => $this->lessons->forUser($request->user()),
+			]);
 	}
 }

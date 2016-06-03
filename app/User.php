@@ -6,12 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    /**
+		/**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'day_limit', 'admin'];
+    protected $fillable = ['name', 'email', 'password', 'day_limit', 'admin',
+		 'created_at', 'updated_at'];
 
     /**
      * The attributes that should be hidden for arrays.
