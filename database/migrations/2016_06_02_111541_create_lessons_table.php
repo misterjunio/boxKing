@@ -14,9 +14,11 @@ class CreateLessonsTable extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->increments('id');
-						$table->date('start_at');
-						$table->date('end_at');
+						$table->dateTimeTz('start_at');
+						$table->dateTimeTz('end_at');
 						$table->string('type');
+						$table->integer('max_participants');
+						$table->integer('no_participants');
             $table->timestamps();
         });
     }

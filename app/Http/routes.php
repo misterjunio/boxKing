@@ -1,5 +1,7 @@
 <?php
 
+use App\Lesson;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -12,9 +14,15 @@
 */
 
 Route::get('/', function () {
-    return redirect()->route('calendar');
+    return redirect('/calendar');
 });
 
-Route::get('/calendar', ['as' => 'calendar', function () {
-    return view('calendar');
-}]);
+Route::get('/calendar', 'CalendarController@show');
+
+Route::auth();
+
+Route::get('/fetch_lessons', function () {	
+	$data = DB::table('lessons')->get();
+
+	return Response::json($data);
+});

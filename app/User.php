@@ -11,16 +11,20 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'day_limit', 'admin'];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
+		
+		/**
+     * The lessons that a user is enrolled in.
+     */
+    public function lessons()
+    {
+        return $this->belongsToMany('App\Lesson', 'enrolled_in')->withTimestamps()->withPivot('approved');
+    }
 }

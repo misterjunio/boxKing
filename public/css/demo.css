@@ -25,21 +25,6 @@ p {
 	display: none;
 }
 
-#about_button_container {
-	position: absolute;
-	top: 0em;
-	right: 0em;	
-	padding: 0.5em 2em;
-	background: #ddf;
-	border: 1px solid #bbd;
-	width: 25em;
-	text-align: center;
-}
-
-.wc-header td {
-	/* background: url(images/header-bg.png) repeat-x; */
-}
-
 #event_edit_container label {
 	display: block;
 	margin-top: 1em;
@@ -75,8 +60,4 @@ ul.formatted li {
 
 ol.formatted li {
 	list-style-type: decimal;
-}
-
-#switcher {
-	float: left;
 }

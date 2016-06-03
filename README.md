@@ -1,2 +1,2 @@
-# boxedule
+# BoxKing
 Schedule for crossfit boxes

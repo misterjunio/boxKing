@@ -1,20 +1,20 @@
 $(document).ready(function() {
-
-
-   var $calendar = $('#calendar');
+	
+	 var $calendar = $('#calendar');
    var id = 10;
 
    $calendar.weekCalendar({
+		 	use24Hour:true,
       displayOddEven:true,
       timeslotsPerHour : 2,
       allowCalEventOverlap : true,
       overlapEventsSeparate: true,
       firstDayOfWeek : 1,
-      businessHours :{start: 7, end: 22, limitDisplay: true },
-      daysToShow : 7,
+      businessHours :{start: 7, end: 22, limitDisplay: true},
+      daysToShow : 6,
       switchDisplay: {'1 day': 1, '3 next days': 3, 'work week': 5, 'full week': 7},
       title: function(daysToShow) {
-			return daysToShow == 1 ? '%date%' : '%start% - %end%';
+				return daysToShow == 1 ? '%date%' : '%start% - %end%';
       },
       height : function($calendar) {
          return $(window).height() - $("h1").outerHeight() - 1;
@@ -40,7 +40,6 @@ $(document).ready(function() {
          var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
          var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
          var titleField = $dialogContent.find("input[name='title']");
-         var bodyField = $dialogContent.find("textarea[name='body']");
 
 
          $dialogContent.dialog({
@@ -58,7 +57,6 @@ $(document).ready(function() {
                   calEvent.start = new Date(startField.val());
                   calEvent.end = new Date(endField.val());
                   calEvent.title = titleField.val();
-                  calEvent.body = bodyField.val();
 
                   $calendar.weekCalendar("removeUnsavedEvents");
                   $calendar.weekCalendar("updateEvent", calEvent);
@@ -90,8 +88,6 @@ $(document).ready(function() {
          var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
          var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
          var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
-         var bodyField = $dialogContent.find("textarea[name='body']");
-         bodyField.val(calEvent.body);
 
          $dialogContent.dialog({
             modal: true,
@@ -107,7 +103,6 @@ $(document).ready(function() {
                   calEvent.start = new Date(startField.val());
                   calEvent.end = new Date(endField.val());
                   calEvent.title = titleField.val();
-                  calEvent.body = bodyField.val();
 
                   $calendar.weekCalendar("updateEvent", calEvent);
                   $dialogContent.dialog("close");
@@ -137,7 +132,51 @@ $(document).ready(function() {
 
       },
       data : function(start, end, callback) {
-         callback(getEventData());
+				$.ajax({
+					url: '/fetch_lessons',
+					type: 'GET',
+					success: onSuccess
+				});
+				
+				/*var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+				$.ajax({
+						url: '/ajax/post',
+						type: 'POST',
+						data: {_token: CSRF_TOKEN},
+						success: onSuccess
+				});*/
+			
+				function onSuccess(data, status, xhr)
+				{
+					var events = [];
+					events.length = data.length;
+					for (var i = 0; i < data.length; i++) {
+							events[i] = {
+									"id":i+1,
+									"start": nearestHalfHour(new Date(data[i]['start_at'])),
+									"end": nearestHalfHour(new Date(data[i]['end_at'])),
+									"title": data[i]['type'],
+							};
+					}
+					callback(events);
+				}
+				
+				function nearestHalfHour(date) {
+					var hour = date.getHours();
+					var minutes = date.getMinutes();
+					if (minutes < 15) {
+							minutes = 0;
+					} else if (minutes < 45) {
+							minutes = 30;
+					} else {
+							minutes = 0;
+							++hour;
+					}
+					date.setMinutes(minutes);
+					date.setHours(hour);
+					return date;
+				}
       }
    });
 
@@ -145,61 +184,6 @@ $(document).ready(function() {
       $dialogContent.find("input").val("");
       $dialogContent.find("textarea").val("");
    }
-
-   function getEventData() {
-      var year = new Date().getFullYear();
-      var month = new Date().getMonth();
-      var day = new Date().getDate();
-
-      return {
-         events : [
-            {
-               "id":1,
-               "start": new Date(year, month, day, 12),
-               "end": new Date(year, month, day, 13, 30),
-               "title":"Lunch with Mike"
-            },
-            {
-               "id":2,
-               "start": new Date(year, month, day, 14),
-               "end": new Date(year, month, day, 14, 45),
-               "title":"Dev Meeting"
-            },
-            {
-               "id":3,
-               "start": new Date(year, month, day + 1, 17),
-               "end": new Date(year, month, day + 1, 17, 45),
-               "title":"Hair cut"
-            },
-            {
-               "id":4,
-               "start": new Date(year, month, day - 1, 8),
-               "end": new Date(year, month, day - 1, 9, 30),
-               "title":"Team breakfast"
-            },
-            {
-               "id":5,
-               "start": new Date(year, month, day + 1, 14),
-               "end": new Date(year, month, day + 1, 15),
-               "title":"Product showcase"
-            },
-            {
-               "id":6,
-               "start": new Date(year, month, day, 10),
-               "end": new Date(year, month, day, 11),
-               "title":"I'm read-only",
-               readOnly:true
-            },
-            {
-               "id":7,
-               "start": new Date(year, month, day + 2, 17),
-               "end": new Date(year, month, day + 3, 9),
-               "title":"Multiday"
-            }
-         ]
-      };
-   }
-
 
    /*
     * Sets up the start and end time fields in the calendar event
@@ -261,25 +245,5 @@ $(document).ready(function() {
       }
 
    });
-
-
-   var $about = $("#about");
-
-   $("#about_button").click(function() {
-      $about.dialog({
-         title: "About this calendar demo",
-         width: 600,
-         close: function() {
-            $about.dialog("destroy");
-            $about.hide();
-         },
-         buttons: {
-            close : function() {
-               $about.dialog("close");
-            }
-         }
-      }).show();
-   });
-
-
+	 
 });
