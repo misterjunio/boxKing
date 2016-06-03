@@ -156,6 +156,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+				/*
+         * Transform PHP Vars to JavaScript
+         */
+    		'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider'
     ],
 
     /*

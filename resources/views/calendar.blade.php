@@ -35,5 +35,6 @@
 			</ul>
 		</form>
 	</div>
+	@include('common.footer')
 	
 @endsection

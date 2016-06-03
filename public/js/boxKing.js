@@ -22,12 +22,22 @@ $(document).ready(function() {
 				return $(window).height() - $("h1").outerHeight() - 1;
 		},
 		eventRender : function(calEvent, $event) {
+				console.log("id: ", calEvent.id);
 				if (calEvent.end.getTime() < new Date().getTime()) {
 					$event.css("backgroundColor", "#aaa");
 					$event.find(".wc-time").css({
 							"backgroundColor" : "#999",
 							"border" : "1px solid #888"
 					});
+				}
+				for (var i = 0; i < user_lessons.length; i++) {
+					if (calEvent.id == user_lessons[i].id) {
+						$event.css("backgroundColor", "#EDDA74");
+						$event.find(".wc-time").css({
+								"backgroundColor" : "#EDDA74",
+								"border" : "1px solid #888"
+						});
+					}
 				}
 		},
 		draggable : function(calEvent, $event) {
@@ -97,7 +107,6 @@ $(document).ready(function() {
 
 		},
 		eventClick : function(calEvent, $event) {
-			console.log(calEvent);
 
 				if (calEvent.readOnly) {
 					return;

@@ -7,6 +7,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\LessonRepository;
+use JavaScript;
 
 class CalendarController extends Controller
 {
@@ -38,8 +39,9 @@ class CalendarController extends Controller
 	 */
 	public function show(Request $request)
 	{
-			return view('calendar', [
-					'lessons' => $this->lessons->forUser($request->user()),
+			JavaScript::put([
+					'user_lessons' => $this->lessons->forUser($request->user())
 			]);
+			return view('calendar');
 	}
 }
