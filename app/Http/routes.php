@@ -27,7 +27,7 @@ Route::get('/fetch_lessons', function () {
 	return Response::json($data);
 });
 
-Route::post('/store_lessons', function () {
+Route::post('/store_lesson', function () {
 	$lesson = Request::input('lesson');
 	$start_at = new DateTime();
 	$start_at->setTimestamp($lesson['start_at']);
@@ -38,5 +38,24 @@ Route::post('/store_lessons', function () {
 		 'max_participants' => intval($lesson['max_participants']),
 		 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]
 	);
+	return Response::json(['data' => $lesson]);
+});
+
+Route::post('/edit_lesson', function () {
+	$lesson = Request::input('lesson');
+	$start_at = new DateTime();
+	$start_at->setTimestamp($lesson['start_at']);
+	$end_at = new DateTime();
+	$end_at->setTimestamp($lesson['end_at']);
+	DB::table('lessons')
+            ->where('id', intval($lesson['id']))
+            ->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
+		 'max_participants' => intval($lesson['max_participants']), 'updated_at' => \Carbon\Carbon::now()]);
+	return Response::json(['data' => $lesson]);
+});
+
+Route::post('/remove_lesson', function () {
+	$lesson = Request::input('lesson');
+	DB::table('lessons')->where('id', intval($lesson['id']))->delete();
 	return Response::json(['data' => $lesson]);
 });

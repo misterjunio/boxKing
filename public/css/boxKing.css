@@ -21,10 +21,6 @@ p {
 	font-size: 1em;	
 }
 
-#event_edit_container, #about {
-	display: none;
-}
-
 #event_edit_container label {
 	display: block;
 	margin-top: 1em;

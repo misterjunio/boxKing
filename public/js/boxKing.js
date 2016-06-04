@@ -22,19 +22,11 @@ $(document).ready(function() {
 				return $(window).height() - $("h1").outerHeight() - 1;
 		},
 		eventRender : function(calEvent, $event) {
-				console.log("id: ", calEvent.id);
-				if (calEvent.end.getTime() < new Date().getTime()) {
-					$event.css("backgroundColor", "#aaa");
-					$event.find(".wc-time").css({
-							"backgroundColor" : "#999",
-							"border" : "1px solid #888"
-					});
-				}
 				for (var i = 0; i < user_lessons.length; i++) {
 					if (calEvent.id == user_lessons[i].id) {
-						$event.css("backgroundColor", "#EDDA74");
+						$event.css("backgroundColor", "#aaa");
 						$event.find(".wc-time").css({
-								"backgroundColor" : "#EDDA74",
+								"backgroundColor" : "#999",
 								"border" : "1px solid #888"
 						});
 					}
@@ -76,14 +68,12 @@ $(document).ready(function() {
 								$calendar.weekCalendar("removeUnsavedEvents");
 								$calendar.weekCalendar("updateEvent", calEvent);
 								$dialogContent.dialog("close");
-								console.log(calEvent);
 								lesson['start_at'] = calEvent['start'].getTime()/1000;
 								lesson['end_at'] = calEvent['end'].getTime()/1000;
 								lesson['type'] = calEvent['title'];
 								lesson['max_participants'] = maxPeopleField.val();
-								console.log(calEvent);
 								$.ajax({
-										url: '/store_lessons',
+										url: '/store_lesson',
 										type: 'post',
 										data: {
 											_token: CSRF_TOKEN,
@@ -117,6 +107,8 @@ $(document).ready(function() {
 				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
 				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
 				var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
+				var maxPeopleField = $dialogContent.find("input[name='max_p']");
+				var lesson = {};
 
 				$dialogContent.dialog({
 					modal: true,
@@ -135,10 +127,43 @@ $(document).ready(function() {
 
 								$calendar.weekCalendar("updateEvent", calEvent);
 								$dialogContent.dialog("close");
+								lesson['id'] = calEvent['id'];
+								lesson['start_at'] = calEvent['start'].getTime()/1000;
+								lesson['end_at'] = calEvent['end'].getTime()/1000;
+								lesson['type'] = calEvent['title'];
+								lesson['max_participants'] = maxPeopleField.val();
+								console.log(lesson);
+								$.ajax({
+										url: '/edit_lesson',
+										type: 'post',
+										data: {
+											_token: CSRF_TOKEN,
+											lesson: lesson,
+										},
+										success: onSuccess
+								});
+		
+								function onSuccess(data, status, xhr)	{
+									console.log("Returned data: ", data);
+								}
 							},
 							"delete" : function() {
 								$calendar.weekCalendar("removeEvent", calEvent.id);
 								$dialogContent.dialog("close");
+								lesson['id'] = calEvent['id'];
+								$.ajax({
+										url: '/remove_lesson',
+										type: 'post',
+										data: {
+											_token: CSRF_TOKEN,
+											lesson: lesson,
+										},
+										success: onSuccess
+								});
+		
+								function onSuccess(data, status, xhr)	{
+									console.log("Returned data: ", data);
+								}
 							},
 							cancel : function() {
 								$dialogContent.dialog("close");
