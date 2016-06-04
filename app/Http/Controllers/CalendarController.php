@@ -40,7 +40,8 @@ class CalendarController extends Controller
 	public function show(Request $request)
 	{
 			JavaScript::put([
-					'user_lessons' => $this->lessons->forUser($request->user())
+					'user_lessons' => $this->lessons->forUser($request->user()),
+					'user' => $request->user()
 			]);
 			return view('calendar');
 	}

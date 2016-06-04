@@ -27,6 +27,14 @@ Route::get('/fetch_lessons', function () {
 	return Response::json($data);
 });
 
+Route::post('/fetch_lesson', function () {	
+	$lesson = Request::input('lesson');
+	DB::table('lessons')
+            ->where('id', intval($lesson))
+            ->get();
+	return Response::json(['data' => $lesson]);
+});
+
 Route::post('/store_lesson', function () {
 	$lesson = Request::input('lesson');
 	$start_at = new DateTime();
