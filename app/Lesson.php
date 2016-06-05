@@ -19,6 +19,6 @@ class Lesson extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User', 'enrolled_in')->withPivot('created_at');
+        return $this->belongsToMany('App\User', 'enrolled_in')->withPivot('created_at')->withTimestamps();
     }
 }

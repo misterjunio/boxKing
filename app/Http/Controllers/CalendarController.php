@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Lesson;
+use App\User;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -62,9 +63,7 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function fetch_lessons(Request $request)	{
-			$data = Lesson::all();
-
-			return response()->json($data);
+			return response()->json(Lesson::all());
 	}
 		
 	/**
@@ -124,10 +123,7 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function fetch_lesson_users(Request $request) {
-			$lesson = $request->input('lesson');
-			//$users = Lesson::find(intval($lesson))->users()->get();
-			$users = $this->users->forLesson(Lesson::find(intval($lesson)));
-			return response()->json($users);
+			return response()->json($this->users->forLesson(Lesson::find(intval($request->input('lesson')))));
 	}
 		
 	/**
@@ -137,9 +133,10 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function schedule_class(Request $request) {
-			/*$lesson = $request->input('lesson');
-			$users = Lesson::find(intval($lesson))->users()->get();
-			return response()->json(['data' => $users]);*/
+			$lesson = Lesson::find(intval($request->input('lesson')));
+			$user = User::find(intval($request->input('user')));
+			$user->lessons()->attach($lesson, ['approved' => true]);
+			return response()->json($this->lessons->forUser($request->user()));
 	}
 		
 	/**
@@ -149,8 +146,9 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function cancel_class(Request $request) {
-			/*$lesson = $request->input('lesson');
-			$users = Lesson::find(intval($lesson))->users()->get();
-			return response()->json(['data' => $users]);*/
+			$lesson = Lesson::find(intval($request->input('lesson')));
+			$user = User::find(intval($request->input('user')));
+			$user->lessons()->detach($lesson);
+			return response()->json($this->lessons->forUser($request->user()));
 	}
 }
