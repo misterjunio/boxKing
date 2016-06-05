@@ -36,10 +36,10 @@ class CalendarController extends Controller
 		* @return void
 		*/
 	public function __construct(LessonRepository $lessons, UserRepository $users) {
-			$this->middleware('auth');
+		$this->middleware('auth');
 
-			$this->lessons = $lessons;
-			$this->users = $users;
+		$this->lessons = $lessons;
+		$this->users = $users;
 	}
 		
 	/**
@@ -49,11 +49,11 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function show(Request $request) {
-			JavaScript::put([
-					'user_lessons' => $this->lessons->forUser($request->user()),
-					'user' => $request->user()
-			]);
-			return view('calendar');
+		JavaScript::put([
+				'user_lessons' => $this->lessons->forUser($request->user()),
+				'user' => $request->user()
+		]);
+		return view('calendar');
 	}
 		
 	/**
@@ -63,7 +63,7 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function fetch_lessons(Request $request)	{
-			return response()->json(Lesson::all());
+		return response()->json(Lesson::all());
 	}
 		
 	/**
@@ -73,17 +73,17 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function store_lesson(Request $request) {
-			$lesson = $request->input('lesson');
-			$start_at = new DateTime();
-			$start_at->setTimestamp($lesson['start_at']);
-			$end_at = new DateTime();
-			$end_at->setTimestamp($lesson['end_at']);
-			
-			$lesson_r = Lesson::create(
-				['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-				'max_participants' => intval($lesson['max_participants'])]
-			);
-			return response()->json($lesson_r);
+		$lesson = $request->input('lesson');
+		$start_at = new DateTime();
+		$start_at->setTimestamp($lesson['start_at']);
+		$end_at = new DateTime();
+		$end_at->setTimestamp($lesson['end_at']);
+		
+		$lesson_r = Lesson::create(
+			['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
+			'max_participants' => intval($lesson['max_participants'])]
+		);
+		return response()->json($lesson_r);
 	}
 		
 	/**
@@ -93,15 +93,15 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function edit_lesson(Request $request) {
-			$lesson = $request->input('lesson');
-			$start_at = new DateTime();
-			$start_at->setTimestamp($lesson['start_at']);
-			$end_at = new DateTime();
-			$end_at->setTimestamp($lesson['end_at']);
-			$lesson_r = Lesson::where('id', intval($lesson['id']))
-								->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-				'max_participants' => intval($lesson['max_participants']), 'updated_at' => \Carbon\Carbon::now()]);
-			return response()->json($lesson_r);
+		$lesson = $request->input('lesson');
+		$start_at = new DateTime();
+		$start_at->setTimestamp($lesson['start_at']);
+		$end_at = new DateTime();
+		$end_at->setTimestamp($lesson['end_at']);
+		$lesson_r = Lesson::where('id', intval($lesson['id']))
+							->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
+			'max_participants' => intval($lesson['max_participants']), 'updated_at' => \Carbon\Carbon::now()]);
+		return response()->json($lesson_r);
 	}
 		
 	/**
@@ -111,9 +111,9 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function remove_lesson(Request $request)	{
-			$lesson = $request->input('lesson');
-			Lesson::destroy(intval($lesson));
-			return response()->json($lesson);
+		$lesson = $request->input('lesson');
+		Lesson::destroy(intval($lesson));
+		return response()->json($lesson);
 	}
 		
 	/**
@@ -123,7 +123,7 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function fetch_lesson_users(Request $request) {
-			return response()->json($this->users->forLesson(Lesson::find(intval($request->input('lesson')))));
+		return response()->json($this->users->forLesson(Lesson::find(intval($request->input('lesson')))));
 	}
 		
 	/**
@@ -133,10 +133,10 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function schedule_class(Request $request) {
-			$lesson = Lesson::find(intval($request->input('lesson')));
-			$user = User::find(intval($request->input('user')));
-			$user->lessons()->attach($lesson, ['approved' => true]);
-			return response()->json($this->lessons->forUser($request->user()));
+		$lesson = Lesson::find(intval($request->input('lesson')));
+		$user = User::find(intval($request->input('user')));
+		$user->lessons()->attach($lesson, ['approved' => true]);
+		return response()->json($this->lessons->forUser($request->user()));
 	}
 		
 	/**
@@ -146,9 +146,9 @@ class CalendarController extends Controller
 	 * @return Response
 	 */
 	public function cancel_class(Request $request) {
-			$lesson = Lesson::find(intval($request->input('lesson')));
-			$user = User::find(intval($request->input('user')));
-			$user->lessons()->detach($lesson);
-			return response()->json($this->lessons->forUser($request->user()));
+		$lesson = Lesson::find(intval($request->input('lesson')));
+		$user = User::find(intval($request->input('user')));
+		$user->lessons()->detach($lesson);
+		return response()->json($this->lessons->forUser($request->user()));
 	}
 }

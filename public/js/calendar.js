@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	
 	var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 	var $calendar = $('#calendar');
 	var lessons = [];
@@ -196,6 +195,7 @@ $(document).ready(function() {
 					entry.appendChild(boldNode);
 					buttons = {
 						'cancel class': function() {
+							window.confirm("Are you sure you want to cancel this class?");
 							$dialogContent.dialog("close");
 							$.ajax({
 								url: '/cancel_class',
@@ -357,10 +357,6 @@ $(document).ready(function() {
 		$dialogContent.find("textarea").val("");
 	}
 
-	/*
-	* Sets up the start and end time fields in the calendar event
-	* form for editing based on the calendar event being edited
-	*/
 	function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
 
 		$startTimeField.empty();

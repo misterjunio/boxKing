@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
-@section('content')
+@section('pagescript')
+	<script type='text/javascript' src="{{asset('js/calendar.js')}}"></script>
+@endsection
 
+@section('content')
 	@include('common.errors')
 	<div id='calendar'></div>
 	<div id="event_edit_container" style="display: none">
@@ -53,5 +56,4 @@
 		</form>
 	</div>
 	@include('common.footer')
-	
 @endsection
