@@ -101,180 +101,7 @@ $(document).ready(function() {
 			}
 			
 			var $dialogContent;
-			if (user.admin) {
-				$dialogContent = $("#event_edit_container");
-				resetForm($dialogContent);
-				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
-				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
-				var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
-				var maxPeopleField = $dialogContent.find("input[name='max_p']");
-				var lesson = {};
-				var clicked_lesson = $.grep(lessons, function(l) {
-					return l.id === calEvent.id;
-				});
-				$("#max_p").value = clicked_lesson[0].max_participants;
-
-				$dialogContent.dialog({
-					modal: true,
-					title: "Edit - " + calEvent.title,
-					close: function() {
-							$dialogContent.dialog("destroy");
-							$dialogContent.hide();
-							$('#calendar').weekCalendar("removeUnsavedEvents");
-					},
-					buttons: {
-							save : function() {
-
-								calEvent.start = new Date(startField.val());
-								calEvent.end = new Date(endField.val());
-								calEvent.title = titleField.val();
-
-								$calendar.weekCalendar("updateEvent", calEvent);
-								$dialogContent.dialog("close");
-								lesson['id'] = calEvent['id'];
-								lesson['start_at'] = calEvent['start'].getTime()/1000;
-								lesson['end_at'] = calEvent['end'].getTime()/1000;
-								lesson['type'] = calEvent['title'];
-								lesson['max_participants'] = maxPeopleField.val();
-								$.ajax({
-										url: '/edit_lesson',
-										type: 'post',
-										data: {
-											_token: CSRF_TOKEN,
-											lesson: lesson,
-										},
-										success: onSuccess
-								});
-		
-								function onSuccess(data, status, xhr)	{
-									console.log("Returned data: ", data);
-								}
-							},
-							"delete" : function() {
-								$calendar.weekCalendar("removeEvent", calEvent.id);
-								$dialogContent.dialog("close");
-								$.ajax({
-										url: '/remove_lesson',
-										type: 'post',
-										data: {
-											_token: CSRF_TOKEN,
-											lesson: calEvent['id'],
-										},
-										success: onSuccess
-								});
-		
-								function onSuccess(data, status, xhr)	{
-									console.log("Returned data: ", data);
-								}
-							},
-							cancel : function() {
-								$dialogContent.dialog("close");
-							}
-					}
-				}).show();
-				setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
-			}
-			else {
-				$dialogContent = $("#schedule_class_container");
-				resetForm($dialogContent);
-				
-				console.log("calEvent ", calEvent);
-				
-				$.ajax({
-					url: '/fetch_lesson_users',
-					type: 'post',
-					data: {
-						_token: CSRF_TOKEN,
-						lesson: calEvent['id'],
-					},
-					success: onSuccess
-				});
-
-				function onSuccess(data, status, xhr)	{
-					console.log("Returned data: ", data);
-					var user_list = document.getElementById('list_participants');
-					user_list.innerHTML = '';
-					var buttons = {};
-					for (var i = 0; i < data.length; i++) {
-						var entry = document.createElement('li');
-						if (i >= calEvent.max_participants) {
-							var italicNode = document.createElement("i");
-							italicNode.appendChild(document.createTextNode("(R) "));
-							entry.appendChild(italicNode);
-						}
-						if (data[i].id == user.id) {
-							var boldNode = document.createElement("b");
-							boldNode.appendChild(document.createTextNode(data[i].name));
-							entry.appendChild(boldNode);
-							buttons = {
-								'cancel class': function() {
-									$dialogContent.dialog("close");
-									$.ajax({
-										url: '/cancel_class',
-										type: 'post',
-										data: {
-											_token: CSRF_TOKEN,
-											lesson: calEvent['id'],
-											user: user.id
-										},
-										success: onScheduleSuccess
-									});
-								},
-								cancel : function() {
-									$dialogContent.dialog("close");
-								}
-							};
-						}
-						else {
-							entry.appendChild(document.createTextNode(data[i].name));
-						}
-						user_list.appendChild(entry);
-						if (data[i].id == user.id) {
-						}
-					}
-					// TODO lesson rules
-					if (user_lessons.length == user.day_limit) {
-						
-					}
-					if ($.isEmptyObject(buttons)) {
-						buttons = {
-							'schedule class': function() {
-								$dialogContent.dialog("close");
-								$.ajax({
-									url: '/schedule_class',
-									type: 'post',
-									data: {
-										_token: CSRF_TOKEN,
-										lesson: calEvent['id'],
-										user: user.id
-									},
-									success: onScheduleSuccess
-								});
-							},
-							cancel : function() {
-								$dialogContent.dialog("close");
-							}
-						};
-					}
-					function onScheduleSuccess (data, status, xhr) {
-						console.log("Returned data: ", data);
-						user_lessons = data;
-						$calendar.weekCalendar("refresh");
-					}
-					$dialogContent.dialog({
-						modal: true,
-						title: calEvent.title,
-						close: function() {
-							$dialogContent.dialog("destroy");
-							$dialogContent.hide();
-							$('#calendar').weekCalendar("removeUnsavedEvents");
-						},
-						buttons: buttons
-					}).show();
-				}
-			}
-			$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
-			$(window).resize().resize(); //fixes a bug in modal overlay size ??
+			seeClass($dialogContent, calEvent);
 		},
 		data : function(start, end, callback) {
 			$.ajax({
@@ -336,6 +163,194 @@ $(document).ready(function() {
 			}
 		}
 	});
+	
+	function seeClass($dialogContent, calEvent) {
+		$dialogContent = $("#schedule_class_container");
+		resetForm($dialogContent);
+		
+		$.ajax({
+			url: '/fetch_lesson_users',
+			type: 'post',
+			data: {
+				_token: CSRF_TOKEN,
+				lesson: calEvent['id'],
+			},
+			success: onSuccess
+		});
+
+		function onSuccess(data, status, xhr)	{
+			console.log("Returned data: ", data);
+			var user_list = document.getElementById('list_participants');
+			user_list.innerHTML = '';
+			var buttons = {};
+			for (var i = 0; i < data.length; i++) {
+				var entry = document.createElement('li');
+				if (i >= calEvent.max_participants) {
+					var italicNode = document.createElement("i");
+					italicNode.appendChild(document.createTextNode("(R) "));
+					entry.appendChild(italicNode);
+				}
+				if (data[i].id == user.id) {
+					var boldNode = document.createElement("b");
+					boldNode.appendChild(document.createTextNode(data[i].name));
+					entry.appendChild(boldNode);
+					buttons = {
+						'cancel class': function() {
+							$dialogContent.dialog("close");
+							$.ajax({
+								url: '/cancel_class',
+								type: 'post',
+								data: {
+									_token: CSRF_TOKEN,
+									lesson: calEvent['id'],
+									user: user.id
+								},
+								success: onScheduleSuccess
+							});
+						},
+						cancel : function() {
+							$dialogContent.dialog("close");
+						}
+					};
+				}
+				else {
+					entry.appendChild(document.createTextNode(data[i].name));
+				}
+				user_list.appendChild(entry);
+			}
+			// TODO lesson rules
+			if (user_lessons.length == user.day_limit) {
+				
+			}
+			if ($.isEmptyObject(buttons) && !user.admin) {
+				buttons = {
+					'schedule class': function() {
+						$dialogContent.dialog("close");
+						$.ajax({
+							url: '/schedule_class',
+							type: 'post',
+							data: {
+								_token: CSRF_TOKEN,
+								lesson: calEvent['id'],
+								user: user.id
+							},
+							success: onScheduleSuccess
+						});
+					},
+					cancel : function() {
+						$dialogContent.dialog("close");
+					}
+				};
+			}
+			else if (user.admin) {
+				buttons = {
+					'edit class': function() {
+						$dialogContent.dialog("close");
+						editClass($dialogContent, calEvent);
+					},
+					cancel : function() {
+						$dialogContent.dialog("close");
+					}
+				};
+			}
+			function onScheduleSuccess (data, status, xhr) {
+				console.log("Returned data: ", data);
+				user_lessons = data;
+				$calendar.weekCalendar("refresh");
+			}
+			$dialogContent.dialog({
+				modal: true,
+				title: calEvent.title,
+				close: function() {
+					$dialogContent.dialog("destroy");
+					$dialogContent.hide();
+					$('#calendar').weekCalendar("removeUnsavedEvents");
+				},
+				buttons: buttons
+			}).show();
+		}
+		
+		$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+		$(window).resize().resize(); //fixes a bug in modal overlay size ??
+	}
+	
+	function editClass($dialogContent, calEvent) {
+				$dialogContent = $("#event_edit_container");
+				resetForm($dialogContent);
+				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+				var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
+				var maxPeopleField = $dialogContent.find("input[name='max_p']");
+				var lesson = {};
+				var clicked_lesson = $.grep(lessons, function(l) {
+					return l.id === calEvent.id;
+				});
+				document.getElementById('max_p').value = clicked_lesson[0].max_participants;
+
+				$dialogContent.dialog({
+					modal: true,
+					title: "Edit - " + calEvent.title,
+					close: function() {
+							$dialogContent.dialog("destroy");
+							$dialogContent.hide();
+							$('#calendar').weekCalendar("removeUnsavedEvents");
+					},
+					buttons: {
+						save: function() {
+							calEvent.start = new Date(startField.val());
+							calEvent.end = new Date(endField.val());
+							calEvent.title = titleField.val();
+
+							$calendar.weekCalendar("updateEvent", calEvent);
+							$dialogContent.dialog("close");
+							lesson['id'] = calEvent['id'];
+							lesson['start_at'] = calEvent['start'].getTime()/1000;
+							lesson['end_at'] = calEvent['end'].getTime()/1000;
+							lesson['type'] = calEvent['title'];
+							lesson['max_participants'] = maxPeopleField.val();
+							$.ajax({
+									url: '/edit_lesson',
+									type: 'post',
+									data: {
+										_token: CSRF_TOKEN,
+										lesson: lesson,
+									},
+									success: onSuccess
+							});
+	
+							function onSuccess(data, status, xhr)	{
+								console.log("Returned data: ", data);
+							}
+						},
+						delete : function() {
+							window.confirm("Are you sure you want to delete this class?");
+							$calendar.weekCalendar("removeEvent", calEvent.id);
+							$dialogContent.dialog("close");
+							$.ajax({
+									url: '/remove_lesson',
+									type: 'post',
+									data: {
+										_token: CSRF_TOKEN,
+										lesson: calEvent['id'],
+									},
+									success: onSuccess
+							});
+	
+							function onSuccess(data, status, xhr)	{
+								console.log("Returned data: ", data);
+							}
+						},
+						cancel : function() {
+							$dialogContent.dialog("close");
+						},
+						'see class': function() {
+							$dialogContent.dialog("close");
+							seeClass($dialogContent, calEvent);
+						}
+					}
+				}).show();
+				setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+	}
 
 	function resetForm($dialogContent) {
 		$dialogContent.find("input").val("");
