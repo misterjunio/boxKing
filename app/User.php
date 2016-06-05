@@ -26,6 +26,6 @@ class User extends Authenticatable
      */
     public function lessons()
     {
-        return $this->belongsToMany('App\Lesson', 'enrolled_in')->withTimestamps()->withPivot('approved');
+        return $this->belongsToMany('App\Lesson', 'enrolled_in');
     }
 }

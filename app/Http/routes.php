@@ -1,6 +1,7 @@
 <?php
 
 use App\Lesson;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,52 +19,12 @@ Route::get('/', function () {
 });
 
 Route::get('/calendar', 'CalendarController@show');
+Route::get('/fetch_lessons', 'CalendarController@fetch_lessons');
+Route::post('/store_lesson', 'CalendarController@store_lesson');
+Route::post('/edit_lesson', 'CalendarController@edit_lesson');
+Route::post('/remove_lesson', 'CalendarController@remove_lesson');
+Route::post('/fetch_lesson_users', 'CalendarController@fetch_lesson_users');
+Route::post('/schedule_class', 'CalendarController@schedule_class');
+Route::post('/cancel_class', 'CalendarController@cancel_class');
 
 Route::auth();
-
-Route::get('/fetch_lessons', function () {	
-	$data = DB::table('lessons')->get();
-
-	return Response::json($data);
-});
-
-Route::post('/fetch_lesson', function () {	
-	$lesson = Request::input('lesson');
-	DB::table('lessons')
-            ->where('id', intval($lesson))
-            ->get();
-	return Response::json(['data' => $lesson]);
-});
-
-Route::post('/store_lesson', function () {
-	$lesson = Request::input('lesson');
-	$start_at = new DateTime();
-	$start_at->setTimestamp($lesson['start_at']);
-	$end_at = new DateTime();
-	$end_at->setTimestamp($lesson['end_at']);
-	DB::table('lessons')->insert(
-		['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-		 'max_participants' => intval($lesson['max_participants']),
-		 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()]
-	);
-	return Response::json(['data' => $lesson]);
-});
-
-Route::post('/edit_lesson', function () {
-	$lesson = Request::input('lesson');
-	$start_at = new DateTime();
-	$start_at->setTimestamp($lesson['start_at']);
-	$end_at = new DateTime();
-	$end_at->setTimestamp($lesson['end_at']);
-	DB::table('lessons')
-            ->where('id', intval($lesson['id']))
-            ->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-		 'max_participants' => intval($lesson['max_participants']), 'updated_at' => \Carbon\Carbon::now()]);
-	return Response::json(['data' => $lesson]);
-});
-
-Route::post('/remove_lesson', function () {
-	$lesson = Request::input('lesson');
-	DB::table('lessons')->where('id', intval($lesson['id']))->delete();
-	return Response::json(['data' => $lesson]);
-});

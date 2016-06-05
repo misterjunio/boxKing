@@ -45,7 +45,7 @@
 				</li>
 				<br/>
 				<li>
-					<h3>Participants enrolled:</h4>
+					<h3>Participants:</h4>
 					<ul id="list_participants">
 					</ul>
 				</li>
