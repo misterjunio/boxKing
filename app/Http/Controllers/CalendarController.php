@@ -149,6 +149,6 @@ class CalendarController extends Controller
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$user = User::find(intval($request->input('user')));
 		$user->lessons()->detach($lesson);
-		return response()->json($this->lessons->forUser($request->user()));
+		return response()->json($this->lessons->forUser($user));
 	}
 }
