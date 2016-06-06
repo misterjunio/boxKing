@@ -22,6 +22,8 @@ $(document).ready(function() {
 			return $(window).height() - $("h1").outerHeight() - 1;
 		},
 		eventRender : function(calEvent, $event) {
+			console.log(calEvent);
+			calEvent.title = calEvent.title + " (" + calEvent.no_participants + "/" + calEvent.max_participants + ")";
 			var i = 0;
 			for (i = 0; i < user_lessons.length; i++) {
 				if (calEvent.id == user_lessons[i].id) {
