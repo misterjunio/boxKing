@@ -219,34 +219,36 @@ $(document).ready(function() {
 				else {
 					entry.appendChild(document.createTextNode(data[i].name));
 				}
-				var a = document.createElement("a");
-   			a.setAttribute('href', '#');
-				a.appendChild(document.createTextNode("Remove"));
-				a.style.cssText = "margin-left: 10px";
-				a.onclick = (function() {
-					var id = data[i].id;
-					return function() { 
-							onClickLink(id);
+				if (user.admin && calEvent.start.getTime() - 3600000 > current_time) {
+					var a = document.createElement("a");
+					a.setAttribute('href', '#');
+					a.appendChild(document.createTextNode("Remove"));
+					a.style.cssText = "margin-left: 10px";
+					a.onclick = (function() {
+						var id = data[i].id;
+						return function() { 
+								onClickLink(id);
+						}
+					})();
+					function onClickLink(id) {
+						$.ajax({
+							url: '/cancel_class',
+							type: 'post',
+							data: {
+								_token: CSRF_TOKEN,
+								lesson: calEvent['id'],
+								user: id
+							},
+							success: onRemoveSuccess
+						});
+					};	
+					function onRemoveSuccess (data, status, xhr) {
+						console.log("Returned data: ", data);
+						$dialogContent.dialog("close");
+						seeClass($dialogContent, calEvent);
 					}
-				})();
-				function onClickLink(id) {
-					$.ajax({
-						url: '/cancel_class',
-						type: 'post',
-						data: {
-							_token: CSRF_TOKEN,
-							lesson: calEvent['id'],
-							user: id
-						},
-						success: onRemoveSuccess
-					});
-				};	
-				function onRemoveSuccess (data, status, xhr) {
-					console.log("Returned data: ", data);
-					$dialogContent.dialog("close");
-					seeClass($dialogContent, calEvent);
+					entry.appendChild(a);
 				}
-				entry.appendChild(a);
 				user_list.appendChild(entry);
 			}
 			if (calEvent.start.getTime() - 3600000 > current_time) {
