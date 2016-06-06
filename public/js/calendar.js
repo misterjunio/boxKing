@@ -111,31 +111,11 @@ $(document).ready(function() {
 		
 			function onSuccess(data, status, xhr)	{
 				lessons.length = data.length;
-				var reggie, dateArray_start, dateArray_end, dateObject_start, dateObject_end;
 				for (var i = 0; i < data.length; i++) {
-						reggie = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/;
-						dateArray_start = reggie.exec(data[i]['start_at']); 
-						dateArray_end = reggie.exec(data[i]['end_at']);
-						dateObject_start = new Date(
-								(+dateArray_start[1]),
-								(+dateArray_start[2])-1, // Careful, month starts at 0!
-								(+dateArray_start[3]),
-								(+dateArray_start[4]),
-								(+dateArray_start[5]),
-								(+dateArray_start[6])
-						);
-						dateObject_end = new Date(
-								(+dateArray_end[1]),
-								(+dateArray_end[2])-1, // Careful, month starts at 0!
-								(+dateArray_end[3]),
-								(+dateArray_end[4]),
-								(+dateArray_end[5]),
-								(+dateArray_end[6])
-						);
 						lessons[i] = {
 								"id": data[i]['id'],
-								"start": nearestHalfHour(new Date(dateObject_start)),
-								"end": nearestHalfHour(new Date(dateObject_end)),
+								"start": nearestHalfHour(dateStringToDate(data[i]['start_at'])),
+								"end": nearestHalfHour(dateStringToDate(data[i]['end_at'])),
 								"title": data[i]['type'],
 								"max_participants": data[i]['max_participants'],
 								"no_participants": data[i]['no_participants'],
@@ -166,6 +146,26 @@ $(document).ready(function() {
 	function seeClass($dialogContent, calEvent) {
 		$dialogContent = $("#schedule_class_container");
 		resetForm($dialogContent);
+		$("#day_limit_msg").hide();
+		var current_time = (new Date()).getTime();
+		var user_week_lessons = [];
+		
+		for (var i = 0; i < user_lessons.length; i++) {
+			if (dateStringToDate(user_lessons[i].start_at).getTime() > $("#calendar").weekCalendar("getCurrentFirstDay") &&
+					dateStringToDate(user_lessons[i].start_at).getTime() < $("#calendar").weekCalendar("getCurrentLastDay")) {
+				user_week_lessons.push(user_lessons[i]);
+			}
+		}
+		var unique = {};
+		var distinct_days = [];
+		var day;
+		for (var lesson in user_week_lessons) {
+		day = dateStringToDate(user_week_lessons[lesson].start_at).getDay();
+			if (typeof(unique[day]) == "undefined") {
+				distinct_days.push(day);
+			}
+			unique[day] = 0;
+		}
 		
 		$.ajax({
 			url: '/fetch_lesson_users',
@@ -193,62 +193,79 @@ $(document).ready(function() {
 					var boldNode = document.createElement("b");
 					boldNode.appendChild(document.createTextNode(data[i].name));
 					entry.appendChild(boldNode);
-					buttons = {
-						'cancel class': function() {
-							window.confirm("Are you sure you want to cancel this class?");
-							$dialogContent.dialog("close");
-							$.ajax({
-								url: '/cancel_class',
-								type: 'post',
-								data: {
-									_token: CSRF_TOKEN,
-									lesson: calEvent['id'],
-									user: user.id
-								},
-								success: onScheduleSuccess
-							});
-						},
-						cancel : function() {
-							$dialogContent.dialog("close");
-						}
-					};
+					if (calEvent.start.getTime() - 3600000 > current_time) {
+						buttons = {
+							'cancel class': function() {
+								window.confirm("Are you sure you want to cancel this class? You may lose your spot");
+								$dialogContent.dialog("close");
+								$.ajax({
+									url: '/cancel_class',
+									type: 'post',
+									data: {
+										_token: CSRF_TOKEN,
+										lesson: calEvent['id'],
+										user: user.id
+									},
+									success: onScheduleSuccess
+								});
+							},
+							cancel: function() {
+								$dialogContent.dialog("close");
+							}
+						};
+					}
 				}
 				else {
 					entry.appendChild(document.createTextNode(data[i].name));
 				}
 				user_list.appendChild(entry);
 			}
-			// TODO lesson rules
-			if (user_lessons.length == user.day_limit) {
-				
-			}
-			if ($.isEmptyObject(buttons) && !user.admin) {
-				buttons = {
-					'schedule class': function() {
-						$dialogContent.dialog("close");
-						$.ajax({
-							url: '/schedule_class',
-							type: 'post',
-							data: {
-								_token: CSRF_TOKEN,
-								lesson: calEvent['id'],
-								user: user.id
+			if (calEvent.start.getTime() - 3600000 > current_time) {
+				if ($.isEmptyObject(buttons) && !user.admin) {
+					if (distinct_days.length < user.day_limit || $.inArray(calEvent.start.getDay(), distinct_days) != -1) {
+						buttons = {
+							'schedule class': function() {
+								$dialogContent.dialog("close");
+								$.ajax({
+									url: '/schedule_class',
+									type: 'post',
+									data: {
+										_token: CSRF_TOKEN,
+										lesson: calEvent['id'],
+										user: user.id
+									},
+									success: onScheduleSuccess
+								});
 							},
-							success: onScheduleSuccess
-						});
-					},
-					cancel : function() {
-						$dialogContent.dialog("close");
+							cancel: function() {
+								$dialogContent.dialog("close");
+							}
+						};
 					}
-				};
+					else {
+						$("#day_limit_msg").show();
+						buttons = {
+							cancel: function() {
+								$dialogContent.dialog("close");
+							}
+						};
+					}
+				}
+				else if (user.admin) {
+					buttons = {
+						'edit class': function() {
+							$dialogContent.dialog("close");
+							editClass($dialogContent, calEvent);
+						},
+						cancel: function() {
+							$dialogContent.dialog("close");
+						}
+					};
+				}
 			}
-			else if (user.admin) {
+			else {
 				buttons = {
-					'edit class': function() {
-						$dialogContent.dialog("close");
-						editClass($dialogContent, calEvent);
-					},
-					cancel : function() {
+					cancel: function() {
 						$dialogContent.dialog("close");
 					}
 				};
@@ -350,6 +367,20 @@ $(document).ready(function() {
 					}
 				}).show();
 				setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+	}
+	
+	function dateStringToDate(dateString) {
+		var reggie, dateArray;
+		reggie = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/;
+		dateArray = reggie.exec(dateString);
+		return new Date(
+				(+dateArray[1]),
+				(+dateArray[2])-1, // Careful, month starts at 0!
+				(+dateArray[3]),
+				(+dateArray[4]),
+				(+dateArray[5]),
+				(+dateArray[6])
+		);
 	}
 
 	function resetForm($dialogContent) {
