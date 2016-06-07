@@ -6,22 +6,27 @@ $(document).ready(function() {
 	$calendar.weekCalendar({
 		readonly: !user.admin,
 		use24Hour: true,
-		timeslotHeight: 18,
+		timeslotHeight: 10,
 		timeSeparator: ' - ',
-		timeslotsPerHour : 2,
-		allowCalEventOverlap : true,
+		defaultEventLength: 4,
+		dateFormat: 'F d',
+		useShortDayNames: true,
+		headerSeparator: ' - ',
+		timeslotsPerHour : 4,
+		allowCalEventOverlap: true,
 		overlapEventsSeparate: true,
-		firstDayOfWeek : 1,
-		businessHours :{start: 7, end: 22, limitDisplay: true},
-		daysToShow : 6,
+		firstDayOfWeek: 1,
+		businessHours: {start: 7, end: 22, limitDisplay: true},
+		daysToShow: 6,
 		switchDisplay: {'1 day': 1, '3 next days': 3, 'full week': 7},
 		title: function(daysToShow) {
 			return daysToShow == 1 ? '%date%' : '%start% - %end%';
 		},
-		height : function($calendar) {
+		height: function($calendar) {
 			return $(window).height() - $("h1").outerHeight() - 1;
 		},
-		eventRender : function(calEvent, $event) {
+		eventRender: function(calEvent, $event) {
+			calEvent.title = calEvent.title + " (" + calEvent.no_participants + "/" + calEvent.max_participants + ")";
 			var i = 0;
 			for (i = 0; i < user_lessons.length; i++) {
 				if (calEvent.id == user_lessons[i].id) {
@@ -33,13 +38,16 @@ $(document).ready(function() {
 				}
 			}
 		},
-		draggable : function(calEvent, $event) {
+		eventAfterRender: function(calEvent, $event) {
+			calEvent.title = calEvent.title.substr(0, calEvent.title.indexOf(' ('));
+		},
+		draggable: function(calEvent, $event) {
 			return false;
 		},
-		resizable : function(calEvent, $event) {
+		resizable: function(calEvent, $event) {
 			return false;
 		},
-		eventNew : function(calEvent, $event) {
+		eventNew: function(calEvent, $event) {
 			var $dialogContent = $("#event_edit_container");
 			resetForm($dialogContent);
 			var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
@@ -94,7 +102,7 @@ $(document).ready(function() {
 			$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
 			setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
 		},
-		eventClick : function(calEvent, $event) {
+		eventClick: function(calEvent, $event) {
 			if (calEvent.readOnly) {
 				return;
 			}
@@ -102,7 +110,7 @@ $(document).ready(function() {
 			var $dialogContent;
 			seeClass($dialogContent, calEvent);
 		},
-		data : function(start, end, callback) {
+		data: function(start, end, callback) {
 			$.ajax({
 				url: '/fetch_lessons',
 				type: 'get',
@@ -114,8 +122,8 @@ $(document).ready(function() {
 				for (var i = 0; i < data.length; i++) {
 						lessons[i] = {
 								"id": data[i]['id'],
-								"start": nearestHalfHour(dateStringToDate(data[i]['start_at'])),
-								"end": nearestHalfHour(dateStringToDate(data[i]['end_at'])),
+								"start": nearestQuarterHour(dateStringToDate(data[i]['start_at'])),
+								"end": nearestQuarterHour(dateStringToDate(data[i]['end_at'])),
 								"title": data[i]['type'],
 								"max_participants": data[i]['max_participants'],
 								"no_participants": data[i]['no_participants'],
@@ -124,13 +132,17 @@ $(document).ready(function() {
 				callback(lessons);
 			}
 			
-			function nearestHalfHour(date) {
+			function nearestQuarterHour(date) {
 				var hour = date.getHours();
 				var minutes = date.getMinutes();
-				if (minutes < 15) {
+				if (minutes < 8) {
 						minutes = 0;
-				} else if (minutes < 45) {
+				} else if (minutes < 23) {
+						minutes = 15;
+				} else if (minutes < 38) {
 						minutes = 30;
+				} else if (minutes < 53) {
+						minutes = 45;
 				} else {
 						minutes = 0;
 						++hour;
@@ -434,6 +446,7 @@ $(document).ready(function() {
 	
 							function onSuccess(data, status, xhr)	{
 								console.log("Returned data: ", data);
+								$calendar.weekCalendar("refresh");
 							}
 						},
 						delete : function() {
@@ -536,8 +549,8 @@ $(document).ready(function() {
 		});
 
 		if (!endTimeSelected) {
-				//automatically select an end date 2 slots away.
-				$endTimeField.find("option:eq(1)").attr("selected", "selected");
+				//automatically select an end date 4 slots away.
+				$endTimeField.find("option:eq(3)").attr("selected", "selected");
 		}
 	});
 });

@@ -135,7 +135,7 @@ class CalendarController extends Controller
 	public function schedule_class(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$user = User::find(intval($request->input('user')));
-		$user->lessons()->attach($lesson, ['approved' => true]);
+		$user->lessons()->attach($lesson);
 		$lesson->increment('no_participants');
 		return response()->json($this->lessons->forUser($user));
 	}

@@ -23,7 +23,7 @@
 			<a href="{{ url('/login') }}">Login</a>
 			<a href="{{ url('/register') }}">Register</a>
 		@else
-			<a href="#">{{ Auth::user()->name }}</a>
+			<a href="{{ url('/users/' . Auth::user()->id) }}">{{ Auth::user()->name }}</a>
 			@if (Auth::user()->admin)
 				<a href="{{ url('/users') }}">Users</a>
 			@endif
