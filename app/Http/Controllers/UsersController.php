@@ -18,7 +18,7 @@ class UsersController extends Controller
 	 * @return Response
 	 */
 	public function index(Request $request) {
-		return view('users.index', ['users' => User::where('admin', false)->get()]);	
+		return view('users.index', ['users' => User::where('admin', false)->orderBy('name', 'asc')->get()]);	
 	}
 		
 	/**

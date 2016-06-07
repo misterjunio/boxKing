@@ -47,7 +47,6 @@
 					<span>Date:</span>
 					<span class="date_holder"></span>
 				</li>
-				<br/>
 				<li>
 					<h3>Participants:</h4>
 					<ul id="list_participants">

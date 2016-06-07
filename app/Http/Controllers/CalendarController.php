@@ -12,6 +12,7 @@ use App\Repositories\LessonRepository;
 use App\Repositories\UserRepository;
 use JavaScript;
 use DateTime;
+use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
@@ -100,7 +101,7 @@ class CalendarController extends Controller
 		$end_at->setTimestamp($lesson['end_at']);
 		$lesson_r = Lesson::where('id', intval($lesson['id']))
 							->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-			'max_participants' => intval($lesson['max_participants']), 'updated_at' => \Carbon\Carbon::now()]);
+			'max_participants' => intval($lesson['max_participants']), 'updated_at' => Carbon::now()]);
 		return response()->json($lesson_r);
 	}
 		
@@ -152,5 +153,33 @@ class CalendarController extends Controller
 		$user->lessons()->detach($lesson);
 		$lesson->decrement('no_participants');
 		return response()->json($this->lessons->forUser($user));
+	}
+	
+	/**
+	 * Copy previous week's schedule.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function load_week(Request $request) {
+		$first_day = Carbon::createFromTimestamp(intval($request->input('first_day')));
+		$last_day = Carbon::createFromTimestamp(intval($request->input('last_day')));
+		$lessons = Lesson::where([
+			['start_at', '>=', $first_day],
+			['end_at', '<=', $last_day]])
+			->delete();
+		$lessons = Lesson::where([
+			['start_at', '>=', $first_day->subWeek()],
+			['end_at', '<=', $last_day->subWeek()]])->get();
+		foreach ($lessons as $i => $lesson) {
+			$start_at = new DateTime($lesson['start_at']);
+			$end_at = new DateTime($lesson['end_at']);
+			$lessons[$i]['start_at'] = $start_at->modify('+1 week');
+			$lessons[$i]['end_at'] = $end_at->modify('+1 week');
+			Lesson::create(
+				['start_at' => $lessons[$i]['start_at'], 'end_at' => $lessons[$i]['end_at'], 
+				'type' => $lessons[$i]['type'],	'max_participants' => $lessons[$i]['max_participants']]);
+		}
+		return response()->json($lessons);
 	}
 }

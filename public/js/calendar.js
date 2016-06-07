@@ -2,11 +2,35 @@ $(document).ready(function() {
 	var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 	var $calendar = $('#calendar');
 	var lessons = [];
+	
+	/*if (user.admin) {
+		var load_btn = $('<input type="button" value="Copy previous week\'s schedule"/>');
+		load_btn.insertBefore($("#calendar"));
+		load_btn.click(function() {
+			if (window.confirm("Are you sure?")) {
+				$.ajax({
+					url: '/load_week',
+					type: 'post',
+					data: {
+						_token: CSRF_TOKEN,
+						first_day: $('#calendar').weekCalendar("getCurrentFirstDay").getTime()/1000,
+						last_day: $('#calendar').weekCalendar("getCurrentLastDay").getTime()/1000,
+					},
+					success: onSuccess
+				});
+
+				function onSuccess(data, status, xhr)	{
+					console.log("Returned data: ", data);
+					$('#calendar').weekCalendar("refresh");
+				}
+			}
+		});
+	}*/
 
 	$calendar.weekCalendar({
 		readonly: !user.admin,
 		use24Hour: true,
-		timeslotHeight: 10,
+		timeslotHeight: 9.5,
 		timeSeparator: ' - ',
 		defaultEventLength: 4,
 		dateFormat: 'F d',
@@ -60,42 +84,42 @@ $(document).ready(function() {
 				modal: true,
 				title: "New lesson",
 				close: function() {
-						$dialogContent.dialog("destroy");
-						$dialogContent.hide();
-						$('#calendar').weekCalendar("removeUnsavedEvents");
+					$dialogContent.dialog("destroy");
+					$dialogContent.hide();
+					$('#calendar').weekCalendar("removeUnsavedEvents");
 				},
 				buttons: {
-						save : function() {
-							calEvent.start = new Date(startField.val());
-							calEvent.end = new Date(endField.val());
-							calEvent.title = titleField.val();
+					save : function() {
+						calEvent.start = new Date(startField.val());
+						calEvent.end = new Date(endField.val());
+						calEvent.title = titleField.val();
 
-							$calendar.weekCalendar("removeUnsavedEvents");
-							$calendar.weekCalendar("updateEvent", calEvent);
-							$dialogContent.dialog("close");
-							lesson['start_at'] = calEvent['start'].getTime()/1000;
-							lesson['end_at'] = calEvent['end'].getTime()/1000;
-							lesson['type'] = calEvent['title'];
-							lesson['max_participants'] = maxPeopleField.val();
-							$.ajax({
-									url: '/store_lesson',
-									type: 'post',
-									data: {
-										_token: CSRF_TOKEN,
-										lesson: lesson,
-									},
-									success: onSuccess
-							});
-	
-							function onSuccess(data, status, xhr)	{
-								console.log("Returned data: ", data);
-								calEvent.id = data.id;
-								$calendar.weekCalendar("refresh");
-							}
-						},
-						cancel : function() {
-							$dialogContent.dialog("close");
+						$calendar.weekCalendar("removeUnsavedEvents");
+						$calendar.weekCalendar("updateEvent", calEvent);
+						$dialogContent.dialog("close");
+						lesson['start_at'] = calEvent['start'].getTime()/1000;
+						lesson['end_at'] = calEvent['end'].getTime()/1000;
+						lesson['type'] = calEvent['title'];
+						lesson['max_participants'] = maxPeopleField.val();
+						$.ajax({
+							url: '/store_lesson',
+							type: 'post',
+							data: {
+								_token: CSRF_TOKEN,
+								lesson: lesson,
+							},
+							success: onSuccess
+						});
+
+						function onSuccess(data, status, xhr)	{
+							console.log("Returned data: ", data);
+							calEvent.id = data.id;
+							$calendar.weekCalendar("refresh");
 						}
+					},
+					cancel : function() {
+						$dialogContent.dialog("close");
+					}
 				}
 			}).show();
 
@@ -208,18 +232,19 @@ $(document).ready(function() {
 					if (calEvent.start.getTime() - 3600000 > current_time) {
 						buttons = {
 							'cancel class': function() {
-								window.confirm("Are you sure you want to cancel this class? You may lose your spot");
-								$dialogContent.dialog("close");
-								$.ajax({
-									url: '/cancel_class',
-									type: 'post',
-									data: {
-										_token: CSRF_TOKEN,
-										lesson: calEvent['id'],
-										user: user.id
-									},
-									success: onScheduleSuccess
-								});
+								if (window.confirm("Are you sure you want to cancel this class? You may lose your spot")) {
+									$dialogContent.dialog("close");
+									$.ajax({
+										url: '/cancel_class',
+										type: 'post',
+										data: {
+											_token: CSRF_TOKEN,
+											lesson: calEvent['id'],
+											user: user.id
+										},
+										success: onScheduleSuccess
+									});
+								}
 							},
 							cancel: function() {
 								$dialogContent.dialog("close");
@@ -285,7 +310,7 @@ $(document).ready(function() {
 						};
 					}
 					else {
-						$("#day_limit_msg").show();
+						$("#day_limit_msg").append(" of " + user.day_limit + " days").show();
 						buttons = {
 							cancel: function() {
 								$dialogContent.dialog("close");
@@ -450,18 +475,19 @@ $(document).ready(function() {
 							}
 						},
 						delete : function() {
-							window.confirm("Are you sure you want to delete this class?");
-							$calendar.weekCalendar("removeEvent", calEvent.id);
-							$dialogContent.dialog("close");
-							$.ajax({
-									url: '/remove_lesson',
-									type: 'post',
-									data: {
-										_token: CSRF_TOKEN,
-										lesson: calEvent['id'],
-									},
-									success: onSuccess
-							});
+							if (window.confirm("Are you sure you want to delete this class?")) {
+								$calendar.weekCalendar("removeEvent", calEvent.id);
+								$dialogContent.dialog("close");
+								$.ajax({
+										url: '/remove_lesson',
+										type: 'post',
+										data: {
+											_token: CSRF_TOKEN,
+											lesson: calEvent['id'],
+										},
+										success: onSuccess
+								});
+							}
 	
 							function onSuccess(data, status, xhr)	{
 								console.log("Returned data: ", data);

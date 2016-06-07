@@ -21,6 +21,11 @@ p {
 	font-size: 1em;	
 }
 
+#calendar .wc-grid-row-events {
+	box-sizing: inherit;
+	-webkit-box-sizing: inherit;
+}
+
 #event_edit_container label {
 	display: block;
 	margin-top: 1em;
@@ -56,4 +61,16 @@ ul.formatted li {
 
 ol.formatted li {
 	list-style-type: decimal;
+}
+
+.wc-scrollable-grid *,
+.wc-scrollable-grid *:before,
+.wc-scrollable-grid *:after {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+#boxking-navbar {
+	margin-bottom: 0;
 }
