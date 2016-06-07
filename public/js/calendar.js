@@ -281,6 +281,7 @@ $(document).ready(function() {
 					function onRemoveSuccess (data, status, xhr) {
 						console.log("Returned data: ", data);
 						$dialogContent.dialog("close");
+						$calendar.weekCalendar("refresh");
 						seeClass($dialogContent, calEvent);
 					}
 					entry.appendChild(a);
@@ -365,6 +366,7 @@ $(document).ready(function() {
 										console.log("Returned data: ", data);
 										$userDialogContent.dialog("close");
 										$dialogContent.dialog("close");
+										$calendar.weekCalendar("refresh");
 										seeClass($dialogContent, calEvent);
 									}
 									entry.appendChild(link);

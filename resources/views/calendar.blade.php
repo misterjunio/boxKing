@@ -10,7 +10,7 @@
 	<div id="event_edit_container" style="display: none">
 		<form>
 			<input type="hidden" />
-			<ul>
+			<ul id="class_info">
 				<li>
 					<span>Date:</span>
 					<span class="date_holder"></span>

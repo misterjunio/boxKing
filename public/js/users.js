@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$('#edit_day_limit').click(function() {
 		$('#edit_day_limit').hide();
 		$('#current_day_limit').hide();
-		$('#day_limit').show();
+		$('#day_limit').css('display', 'inline');
 	});
 	
 	$('#submit_button').click(function() {
