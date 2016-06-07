@@ -125,7 +125,7 @@ class CalendarController extends Controller
 	public function fetch_lesson_users(Request $request) {
 		return response()->json($this->users->forLesson(Lesson::find(intval($request->input('lesson')))));
 	}
-		
+	
 	/**
 	 * Schedule lesson for user.
 	 *
@@ -134,11 +134,12 @@ class CalendarController extends Controller
 	 */
 	public function schedule_class(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
+		$lesson->increment('no_participants');
 		$user = User::find(intval($request->input('user')));
 		$user->lessons()->attach($lesson, ['approved' => true]);
 		return response()->json($this->lessons->forUser($request->user()));
 	}
-		
+	
 	/**
 	 * Cancel lesson for user.
 	 *
@@ -147,6 +148,7 @@ class CalendarController extends Controller
 	 */
 	public function cancel_class(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
+		$lesson->decrement('no_participants');
 		$user = User::find(intval($request->input('user')));
 		$user->lessons()->detach($lesson);
 		return response()->json($this->lessons->forUser($user));
