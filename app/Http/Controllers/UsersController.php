@@ -41,4 +41,16 @@ class UsersController extends Controller
 		return response()->json(User::where('id', intval($request->input('user')))
 							->update(['day_limit' => intval($request->input('day_limit'))]));
 	}
+		
+	/**
+	 * Return users list.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function users_list(Request $request) {
+		$lesson = Lesson::find(intval($request->input('lesson')));
+		$ids = $lesson->users()->lists('user_id');
+		return response()->json(User::where('admin', false)->whereNotIn('id', $ids)->orderBy('name', 'asc')->get());
+	}
 }

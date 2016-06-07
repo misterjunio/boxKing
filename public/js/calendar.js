@@ -22,7 +22,6 @@ $(document).ready(function() {
 			return $(window).height() - $("h1").outerHeight() - 1;
 		},
 		eventRender : function(calEvent, $event) {
-			calEvent.title = calEvent.title + " (" + calEvent.no_participants + "/" + calEvent.max_participants + ")";
 			var i = 0;
 			for (i = 0; i < user_lessons.length; i++) {
 				if (calEvent.id == user_lessons[i].id) {
@@ -180,8 +179,8 @@ $(document).ready(function() {
 
 		function onSuccess(data, status, xhr)	{
 			console.log("Returned data: ", data);
-			var user_list = document.getElementById('list_participants');
-			user_list.innerHTML = '';
+			var list_participants = document.getElementById('list_participants');
+			list_participants.innerHTML = '';
 			var buttons = {};
 			for (var i = 0; i < data.length; i++) {
 				var entry = document.createElement('li');
@@ -226,7 +225,7 @@ $(document).ready(function() {
 					a.style.cssText = "margin-left: 10px";
 					a.onclick = (function() {
 						var id = data[i].id;
-						return function() { 
+						return function() {
 								onClickLink(id);
 						}
 					})();
@@ -241,7 +240,7 @@ $(document).ready(function() {
 							},
 							success: onRemoveSuccess
 						});
-					};	
+					};
 					function onRemoveSuccess (data, status, xhr) {
 						console.log("Returned data: ", data);
 						$dialogContent.dialog("close");
@@ -249,7 +248,7 @@ $(document).ready(function() {
 					}
 					entry.appendChild(a);
 				}
-				user_list.appendChild(entry);
+				list_participants.appendChild(entry);
 			}
 			if (calEvent.start.getTime() - 3600000 > current_time) {
 				if ($.isEmptyObject(buttons) && !user.admin) {
@@ -284,6 +283,72 @@ $(document).ready(function() {
 				}
 				else if (user.admin) {
 					buttons = {
+						'add user': function() {
+							var $userDialogContent = $("#user_list");
+							$.ajax({
+								url: '/users_list',
+								type: 'post',
+								data: {
+									_token: CSRF_TOKEN,
+									lesson: calEvent['id'],
+								},
+								success: onUsersSuccess
+							});
+							function onUsersSuccess(data, status, xhr)	{
+								console.log("Returned data: ", data);
+								var list_users = document.getElementById('list_users');
+								list_users.innerHTML = '';
+								for (var i = 0; i < data.length; i++) {
+									var entry = document.createElement('li');
+									entry.appendChild(document.createTextNode(data[i].name + " - " + data[i].email));
+									entry.style.cssText = "margin-bottom: 5px";
+									var link = document.createElement('a');
+									link.setAttribute('href', '#');
+									link.appendChild(document.createTextNode("Add"));
+									link.style.cssText = "margin-left: 10px";
+									link.onclick = (function() {
+										var id = data[i].id;
+										return function() {
+												onClickLink(id);
+										}
+									})();
+									function onClickLink(id) {
+										$.ajax({
+											url: '/schedule_class',
+											type: 'post',
+											data: {
+												_token: CSRF_TOKEN,
+												lesson: calEvent['id'],
+												user: id
+											},
+											success: onAddSuccess
+										});
+									};
+									function onAddSuccess (data, status, xhr) {
+										console.log("Returned data: ", data);
+										$userDialogContent.dialog("close");
+										$dialogContent.dialog("close");
+										seeClass($dialogContent, calEvent);
+									}
+									entry.appendChild(link);
+									list_users.appendChild(entry);
+								}
+								$userDialogContent.dialog({
+									modal: true,
+									title: "Choose user",
+									close: function() {
+										$userDialogContent.dialog("destroy");
+										$userDialogContent.hide();
+										$('#calendar').weekCalendar("removeUnsavedEvents");
+									},
+									buttons: {
+										cancel: function() {
+											$userDialogContent.dialog("close");
+										}
+									}
+								}).show();
+							}
+						},
 						'edit class': function() {
 							$dialogContent.dialog("close");
 							editClass($dialogContent, calEvent);
@@ -308,7 +373,7 @@ $(document).ready(function() {
 			}
 			$dialogContent.dialog({
 				modal: true,
-				title: calEvent.title,
+				title: calEvent.title + " (" + data.length + "/" + calEvent.max_participants + ")",
 				close: function() {
 					$dialogContent.dialog("destroy");
 					$dialogContent.hide();
@@ -318,7 +383,8 @@ $(document).ready(function() {
 			}).show();
 		}
 		
-		$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+		$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start, "M d, H:i") +
+		" to " + $calendar.weekCalendar("formatDate", calEvent.end, "H:i"));
 		$(window).resize().resize(); //fixes a bug in modal overlay size ??
 	}
 	
@@ -337,7 +403,7 @@ $(document).ready(function() {
 
 				$dialogContent.dialog({
 					modal: true,
-					title: "Edit - " + calEvent.title,
+					title: "Edit - " + calEvent.title + " (" + calEvent.no_participants + "/" + calEvent.max_participants + ")",
 					close: function() {
 							$dialogContent.dialog("destroy");
 							$dialogContent.hide();

@@ -134,10 +134,10 @@ class CalendarController extends Controller
 	 */
 	public function schedule_class(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
-		$lesson->increment('no_participants');
 		$user = User::find(intval($request->input('user')));
 		$user->lessons()->attach($lesson, ['approved' => true]);
-		return response()->json($this->lessons->forUser($request->user()));
+		$lesson->increment('no_participants');
+		return response()->json($this->lessons->forUser($user));
 	}
 	
 	/**
@@ -148,9 +148,9 @@ class CalendarController extends Controller
 	 */
 	public function cancel_class(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
-		$lesson->decrement('no_participants');
 		$user = User::find(intval($request->input('user')));
 		$user->lessons()->detach($lesson);
+		$lesson->decrement('no_participants');
 		return response()->json($this->lessons->forUser($user));
 	}
 }

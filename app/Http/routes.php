@@ -38,3 +38,4 @@ Route::post('/cancel_class', 'CalendarController@cancel_class');
 Route::get('/users', 'UsersController@index');
 Route::get('/users/{user}', 'UsersController@show');
 Route::post('/edit_day_limit', 'UsersController@edit_day_limit');
+Route::post('/users_list', 'UsersController@users_list');
