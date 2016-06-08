@@ -2,30 +2,6 @@ $(document).ready(function() {
 	var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 	var $calendar = $('#calendar');
 	var lessons = [];
-	
-	/*if (user.admin) {
-		var load_btn = $('<input type="button" value="Copy previous week\'s schedule"/>');
-		load_btn.insertBefore($("#calendar"));
-		load_btn.click(function() {
-			if (window.confirm("Are you sure?")) {
-				$.ajax({
-					url: '/load_week',
-					type: 'post',
-					data: {
-						_token: CSRF_TOKEN,
-						first_day: $('#calendar').weekCalendar("getCurrentFirstDay").getTime()/1000,
-						last_day: $('#calendar').weekCalendar("getCurrentLastDay").getTime()/1000,
-					},
-					success: onSuccess
-				});
-
-				function onSuccess(data, status, xhr)	{
-					console.log("Returned data: ", data);
-					$('#calendar').weekCalendar("refresh");
-				}
-			}
-		});
-	}*/
 
 	$calendar.weekCalendar({
 		readonly: !user.admin,
@@ -334,18 +310,18 @@ $(document).ready(function() {
 							});
 							function onUsersSuccess(data, status, xhr)	{
 								console.log("Returned data: ", data);
-								var list_users = document.getElementById('list_users');
+								/*var list_users = document.getElementById('list_users');
 								list_users.innerHTML = '';
-								for (var i = 0; i < data.length; i++) {
+								for (var i = 0; i < data.data.length; i++) {
 									var entry = document.createElement('li');
-									entry.appendChild(document.createTextNode(data[i].name + " - " + data[i].email));
+									entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
 									entry.style.cssText = "margin-bottom: 5px";
 									var link = document.createElement('a');
 									link.setAttribute('href', '#');
 									link.appendChild(document.createTextNode("Add"));
 									link.style.cssText = "margin-left: 10px";
 									link.onclick = (function() {
-										var id = data[i].id;
+										var id = data.data[i].id;
 										return function() {
 												onClickLink(id);
 										}
@@ -371,8 +347,8 @@ $(document).ready(function() {
 									}
 									entry.appendChild(link);
 									list_users.appendChild(entry);
-								}
-								$userDialogContent.dialog({
+								}*/
+								$userDialogContent.load(data).dialog({
 									modal: true,
 									title: "Choose user",
 									close: function() {

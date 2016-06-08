@@ -14,6 +14,7 @@
 								 - {{ $user->day_limit }} day plan</li>
 							@endforeach
 						</ul>
+						{!! $users->links() !!}
 					</div>
 				</div>
 			</div>

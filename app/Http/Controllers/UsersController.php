@@ -19,7 +19,7 @@ class UsersController extends Controller
 	 * @return Response
 	 */
 	public function index(Request $request) {
-		return view('users.index', ['users' => User::where('admin', false)->orderBy('name', 'asc')->get()]);	
+		return view('users.index', ['users' => User::where('admin', false)->orderBy('name', 'asc')->paginate(10)]);	
 	}
 		
 	/**
@@ -52,7 +52,7 @@ class UsersController extends Controller
 	public function users_list(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$ids = $lesson->users()->lists('user_id');
-		return response()->json(User::where('admin', false)->whereNotIn('id', $ids)->orderBy('name', 'asc')->get());
+		return response()->json(User::where('admin', false)->whereNotIn('id', $ids)->orderBy('name', 'asc')->paginate(5));
 	}
 	
 	/**
