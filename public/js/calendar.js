@@ -297,7 +297,16 @@ $(document).ready(function() {
 				}
 				else if (user.admin) {
 					buttons = {
-						'add user': function() {
+						'add user': (function() {
+								var $dialogContent2 = $dialogContent;
+								var calEvent2 = calEvent;
+								var page = 0;
+								return function() {
+										populate_add_users($dialogContent2, calEvent2, page);
+								}
+							})(),
+							/*
+						function() {
 							var $userDialogContent = $("#user_list");
 							$.ajax({
 								url: '/users_list',
@@ -310,12 +319,17 @@ $(document).ready(function() {
 							});
 							function onUsersSuccess(data, status, xhr)	{
 								console.log("Returned data: ", data);
-								/*var list_users = document.getElementById('list_users');
+								var list_users = document.getElementById('list_users');
 								list_users.innerHTML = '';
 								for (var i = 0; i < data.data.length; i++) {
 									var entry = document.createElement('li');
 									entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
-									entry.style.cssText = "margin-bottom: 5px";
+									if (i == 0) {
+										entry.style.cssText = "margin-bottom: 1%; margin-top: 5%";
+									}
+									else {
+										entry.style.cssText = "margin-bottom: 1%";
+									}
 									var link = document.createElement('a');
 									link.setAttribute('href', '#');
 									link.appendChild(document.createTextNode("Add"));
@@ -347,8 +361,9 @@ $(document).ready(function() {
 									}
 									entry.appendChild(link);
 									list_users.appendChild(entry);
-								}*/
-								$userDialogContent.load(data).dialog({
+								}
+								paginate_add_users(data, calEvent);
+								$userDialogContent.dialog({
 									modal: true,
 									title: "Choose user",
 									close: function() {
@@ -363,7 +378,7 @@ $(document).ready(function() {
 									}
 								}).show();
 							}
-						},
+						},*/
 						'edit class': function() {
 							$dialogContent.dialog("close");
 							editClass($dialogContent, calEvent);
@@ -381,7 +396,7 @@ $(document).ready(function() {
 					}
 				};
 			}
-			function onScheduleSuccess (data, status, xhr) {
+			function onScheduleSuccess(data, status, xhr) {
 				console.log("Returned data: ", data);
 				user_lessons = data;
 				$calendar.weekCalendar("refresh");
@@ -401,6 +416,188 @@ $(document).ready(function() {
 		$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start, "M d, H:i") +
 		" to " + $calendar.weekCalendar("formatDate", calEvent.end, "H:i"));
 		$(window).resize().resize(); //fixes a bug in modal overlay size ??
+	}
+	
+	function populate_add_users($dialogContent, calEvent, page) {
+		var $userDialogContent = $("#user_list");
+		$.ajax({
+			url: '/users_list?page=' + page,
+			type: 'post',
+			data: {
+				_token: CSRF_TOKEN,
+				lesson: calEvent['id'],
+			},
+			success: onUsersSuccess
+		});
+		function onUsersSuccess(data, status, xhr)	{
+			console.log("Returned data: ", data);
+			var list_users = document.getElementById('list_users');
+			list_users.innerHTML = '';
+			for (var i = 0; i < data.data.length; i++) {
+				var entry = document.createElement('li');
+				entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
+				if (i == 0) {
+					entry.style.cssText = "margin-bottom: 1%; margin-top: 5%";
+				}
+				else {
+					entry.style.cssText = "margin-bottom: 1%";
+				}
+				var link = document.createElement('a');
+				link.setAttribute('href', '#');
+				link.appendChild(document.createTextNode("Add"));
+				link.style.cssText = "margin-left: 10px";
+				link.onclick = (function() {
+					var id = data.data[i].id;
+					return function() {
+							onClickLink(id);
+					}
+				})();
+				function onClickLink(id) {
+					$.ajax({
+						url: '/schedule_class',
+						type: 'post',
+						data: {
+							_token: CSRF_TOKEN,
+							lesson: calEvent['id'],
+							user: id
+						},
+						success: onAddSuccess
+					});
+				};
+				function onAddSuccess(data, status, xhr) {
+					console.log("Returned data: ", data);
+					$userDialogContent.dialog("close");
+					$dialogContent.dialog("close");
+					$calendar.weekCalendar("refresh");
+					seeClass($dialogContent, calEvent);
+				}
+				entry.appendChild(link);
+				list_users.appendChild(entry);
+			}
+			$userDialogContent.dialog({
+				modal: true,
+				title: "Choose user",
+				close: function() {
+					$userDialogContent.dialog("destroy");
+					$userDialogContent.hide();
+					$('#calendar').weekCalendar("removeUnsavedEvents");
+				},
+				buttons: {
+					cancel: function() {
+						$userDialogContent.dialog("close");
+					}
+				}
+			}).show();
+			var pagination_list = document.createElement('div');
+			pagination_list.className = 'pagination';
+			pagination_list.style.cssText = "margin-top: 10%";
+			var back_btn = document.createElement('li');
+			var back_text = document.createTextNode('«');
+			if (data.current_page == 1) {
+				var back_span = document.createElement('span');
+				back_span.appendChild(back_text);
+				back_btn.appendChild(back_span);
+				back_btn.className = 'disabled';
+			}
+			else {
+				var back_link = document.createElement('a');
+				back_link.setAttribute('href', '#');
+				back_link.appendChild(back_text);
+				back_link.onclick = (function() {
+					var $dialogContent2 = $dialogContent;
+					var calEvent2 = calEvent;
+					var page = data.current_page - 1;
+					return function() {
+							populate_add_users($dialogContent2, calEvent2, page);
+					}
+				})();
+				back_btn.appendChild(back_link);
+			}
+			pagination_list.appendChild(back_btn);
+			for (var i = 0; i < data.last_page; i++) {
+				var page_btn = document.createElement('li');
+				var page_text = document.createTextNode('' + (i + 1));
+				if (data.current_page == i + 1) {
+					var pagination_span = document.createElement('span');
+					pagination_span.appendChild(page_text);
+					page_btn.appendChild(pagination_span);
+					page_btn.className = 'active';
+				}
+				else {
+					var page_link = document.createElement('a');
+					page_link.setAttribute('href', '#');
+					page_link.appendChild(page_text);
+					page_link.onclick = (function() {
+						var $dialogContent2 = $dialogContent;
+						var calEvent2 = calEvent;
+						var page = i + 1;
+						return function() {
+								populate_add_users($dialogContent2, calEvent2, page);
+						}
+					})();
+					page_btn.appendChild(page_link);
+				}
+				pagination_list.appendChild(page_btn);
+			}
+			var next_btn = document.createElement('li');
+			var next_text = document.createTextNode('»');
+			if (data.current_page == data.last_page) {
+				var next_span = document.createElement('span');
+				next_span.appendChild(next_text);
+				next_btn.appendChild(next_span);
+				next_btn.className = 'disabled';
+			}
+			else {
+				var next_link = document.createElement('a');
+				next_link.setAttribute('href', '#');
+				next_link.appendChild(next_text);
+				next_link.onclick = (function() {
+					var $dialogContent2 = $dialogContent;
+					var calEvent2 = calEvent;
+					var page = data.current_page + 1;
+					return function() {
+							populate_add_users($dialogContent2, calEvent2, page);
+					}
+				})();
+				next_btn.appendChild(next_link);
+			}
+			pagination_list.appendChild(next_btn);
+			list_users.appendChild(pagination_list);
+		}
+		
+						/*entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
+						entry.style.cssText = "margin-bottom: 5px";
+						var link = document.createElement('a');
+						link.setAttribute('href', '#');
+						link.appendChild(document.createTextNode("Add"));
+						link.style.cssText = "margin-left: 10px";
+						link.onclick = (function() {
+							var id = data.data[i].id;
+							return function() {
+									onClickLink(id);
+							}
+						})();
+						function onClickLink(id) {
+							$.ajax({
+								url: '/schedule_class',
+								type: 'post',
+								data: {
+									_token: CSRF_TOKEN,
+									lesson: calEvent['id'],
+									user: id
+								},
+								success: onAddSuccess
+							});
+						};
+						function onAddSuccess (data, status, xhr) {
+							console.log("Returned data: ", data);
+							$userDialogContent.dialog("close");
+							$dialogContent.dialog("close");
+							$calendar.weekCalendar("refresh");
+							seeClass($dialogContent, calEvent);
+						}
+						entry.appendChild(link);
+						list_users.appendChild(entry);*/
 	}
 	
 	function editClass($dialogContent, calEvent) {

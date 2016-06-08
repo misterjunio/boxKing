@@ -55,5 +55,9 @@
 			</ul>
 		</form>
 	</div>
+	<div id="user_list" style="display: none">
+		<ul id="list_users" style="margin-top: 3%">
+		</ul>
+	</div>
 	@include('common.footer')
 @endsection
