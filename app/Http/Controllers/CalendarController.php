@@ -54,7 +54,7 @@ class CalendarController extends Controller
 				'user_lessons' => $this->lessons->forUser($request->user()),
 				'user' => $request->user()
 		]);
-		return view('calendar');
+		return view('layouts.calendar');
 	}
 		
 	/**

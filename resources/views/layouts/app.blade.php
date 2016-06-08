@@ -48,7 +48,7 @@
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin options<span class="caret"></span></a>
 									<ul class="dropdown-menu">
 										<li><a href="{{ url('/users') }}">Manage users</a></li>
-										<li id="load_previous"><a href="#">Copy previous week</a></li>
+										@if (Request::url() === url('/calendar'))<li id="load_previous"><a href="#">Copy previous week</a></li>@endif
 									</ul>
 								</li>
 							@endif
