@@ -18,6 +18,9 @@ use App\User;
 Route::get('/', function () {
     return redirect('/calendar');
 });
+Route::get('/home', function () {
+    return redirect('/calendar');
+});
 
 /* Authentication */
 Route::auth();

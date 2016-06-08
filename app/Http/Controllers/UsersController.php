@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Mail;
 
 class UsersController extends Controller
 {		
@@ -52,5 +53,20 @@ class UsersController extends Controller
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$ids = $lesson->users()->lists('user_id');
 		return response()->json(User::where('admin', false)->whereNotIn('id', $ids)->orderBy('name', 'asc')->get());
+	}
+	
+	/**
+	 * Send a reset password e-mail to the user.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function sendPasswordEmail(Request $request) {
+		$user = User::find(intval($request->input('user')));
+		Mail::send('emails.password', ['user' => $user], function ($message) {
+			$message->from('olimpusbox@gmail.com', 'Olimpus Box');
+			$message->to($user.email);
+			$message->subject('BoxKing password reset');
+		});
 	}
 }
