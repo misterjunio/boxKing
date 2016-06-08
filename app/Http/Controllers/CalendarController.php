@@ -182,4 +182,18 @@ class CalendarController extends Controller
 		}
 		return response()->json($lessons);
 	}
+	
+	/**
+	 * Schedule lesson for guest user.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function add_guest(Request $request) {
+		$lesson = Lesson::find(intval($request->input('lesson')));
+		$user = User::where('email', 'guest@example.com')->first();
+		$user->lessons()->attach($lesson);
+		$lesson->increment('no_participants');
+		return response()->json($this->lessons->forUser($user));
+	}
 }

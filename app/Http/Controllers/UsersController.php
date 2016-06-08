@@ -19,7 +19,7 @@ class UsersController extends Controller
 	 * @return Response
 	 */
 	public function index(Request $request) {
-		return view('users.index', ['users' => User::where('admin', false)->orderBy('name', 'asc')->paginate(10)]);	
+		return view('users.index', ['users' => User::where([['admin', false], ['name', '!=', 'Guest']])->orderBy('name', 'asc')->paginate(10)]);	
 	}
 		
 	/**
@@ -52,17 +52,17 @@ class UsersController extends Controller
 	public function users_list(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$ids = $lesson->users()->lists('user_id');
-		return response()->json(User::where('admin', false)->whereNotIn('id', $ids)->orderBy('name', 'asc')->paginate(5));
+		return response()->json(User::where([['admin', false], ['name', '!=', 'Guest']])->whereNotIn('id', $ids)->orderBy('name', 'asc')->paginate(8));
 	}
 	
 	/**
-	 * Send a reset password e-mail to the user.
+	 * Send a global e-mail to all users.
 	 *
 	 * @param  Request  $request
 	 * @return Response
 	 */
-	public function sendPasswordEmail(Request $request) {
-		$user = User::find(intval($request->input('user')));
+	public function sendGlobalEmail(Request $request) {
+		$user = User::where([['admin', false], ['name', '!=', 'Guest']])->get();
 		Mail::send('emails.password', ['user' => $user], function ($message) {
 			$message->from('olimpusbox@gmail.com', 'Olimpus Box');
 			$message->to($user.email);

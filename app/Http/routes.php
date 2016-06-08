@@ -37,6 +37,7 @@ Route::post('/fetch_lesson_users', 'CalendarController@fetch_lesson_users');
 Route::post('/schedule_class', 'CalendarController@schedule_class');
 Route::post('/cancel_class', 'CalendarController@cancel_class');
 Route::post('/load_week', 'CalendarController@load_week');
+Route::post('/add_guest', 'CalendarController@add_guest');
 
 /* Users */
 Route::get('/users', 'UsersController@index');

@@ -2,6 +2,7 @@ $(document).ready(function() {
 	var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 	var $calendar = $('#calendar');
 	var lessons = [];
+	var button_guest = 0;
 
 	$calendar.weekCalendar({
 		readonly: !user.admin,
@@ -195,6 +196,9 @@ $(document).ready(function() {
 			list_participants.innerHTML = '';
 			var buttons = {};
 			for (var i = 0; i < data.length; i++) {
+				if (data[i].email == 'guest@example.com') {
+					button_guest = 1;
+				}
 				var entry = document.createElement('li');
 				if (i >= calEvent.max_participants) {
 					var italicNode = document.createElement("i");
@@ -305,80 +309,6 @@ $(document).ready(function() {
 										populate_add_users($dialogContent2, calEvent2, page);
 								}
 							})(),
-							/*
-						function() {
-							var $userDialogContent = $("#user_list");
-							$.ajax({
-								url: '/users_list',
-								type: 'post',
-								data: {
-									_token: CSRF_TOKEN,
-									lesson: calEvent['id'],
-								},
-								success: onUsersSuccess
-							});
-							function onUsersSuccess(data, status, xhr)	{
-								console.log("Returned data: ", data);
-								var list_users = document.getElementById('list_users');
-								list_users.innerHTML = '';
-								for (var i = 0; i < data.data.length; i++) {
-									var entry = document.createElement('li');
-									entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
-									if (i == 0) {
-										entry.style.cssText = "margin-bottom: 1%; margin-top: 5%";
-									}
-									else {
-										entry.style.cssText = "margin-bottom: 1%";
-									}
-									var link = document.createElement('a');
-									link.setAttribute('href', '#');
-									link.appendChild(document.createTextNode("Add"));
-									link.style.cssText = "margin-left: 10px";
-									link.onclick = (function() {
-										var id = data.data[i].id;
-										return function() {
-												onClickLink(id);
-										}
-									})();
-									function onClickLink(id) {
-										$.ajax({
-											url: '/schedule_class',
-											type: 'post',
-											data: {
-												_token: CSRF_TOKEN,
-												lesson: calEvent['id'],
-												user: id
-											},
-											success: onAddSuccess
-										});
-									};
-									function onAddSuccess (data, status, xhr) {
-										console.log("Returned data: ", data);
-										$userDialogContent.dialog("close");
-										$dialogContent.dialog("close");
-										$calendar.weekCalendar("refresh");
-										seeClass($dialogContent, calEvent);
-									}
-									entry.appendChild(link);
-									list_users.appendChild(entry);
-								}
-								paginate_add_users(data, calEvent);
-								$userDialogContent.dialog({
-									modal: true,
-									title: "Choose user",
-									close: function() {
-										$userDialogContent.dialog("destroy");
-										$userDialogContent.hide();
-										$('#calendar').weekCalendar("removeUnsavedEvents");
-									},
-									buttons: {
-										cancel: function() {
-											$userDialogContent.dialog("close");
-										}
-									}
-								}).show();
-							}
-						},*/
 						'edit class': function() {
 							$dialogContent.dialog("close");
 							editClass($dialogContent, calEvent);
@@ -474,6 +404,33 @@ $(document).ready(function() {
 				entry.appendChild(link);
 				list_users.appendChild(entry);
 			}
+			var buttons_guest = {};
+			if (button_guest == 0) {
+				buttons_guest = {
+					'add guest': function() {
+						$.ajax({
+							url: '/add_guest',
+							type: 'post',
+							data: {
+								_token: CSRF_TOKEN,
+								lesson: calEvent['id']
+							},
+							success: onAddGuestSuccess
+						});
+					},
+					cancel: function() {
+						$userDialogContent.dialog("close");
+					}
+				}
+			}
+			else {
+				button_guest = 0;
+				buttons_guest = {
+					cancel: function() {
+						$userDialogContent.dialog("close");
+					}
+				}
+			}
 			$userDialogContent.dialog({
 				modal: true,
 				title: "Choose user",
@@ -482,12 +439,15 @@ $(document).ready(function() {
 					$userDialogContent.hide();
 					$('#calendar').weekCalendar("removeUnsavedEvents");
 				},
-				buttons: {
-					cancel: function() {
-						$userDialogContent.dialog("close");
-					}
-				}
+				buttons: buttons_guest
 			}).show();
+			function onAddGuestSuccess(data, status, xhr) {
+				console.log("Returned data: ", data);
+				$userDialogContent.dialog("close");
+				$dialogContent.dialog("close");
+				$calendar.weekCalendar("refresh");
+				seeClass($dialogContent, calEvent);
+			}
 			var pagination_list = document.createElement('div');
 			pagination_list.className = 'pagination';
 			pagination_list.style.cssText = "margin-top: 10%";
@@ -564,40 +524,6 @@ $(document).ready(function() {
 			pagination_list.appendChild(next_btn);
 			list_users.appendChild(pagination_list);
 		}
-		
-						/*entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
-						entry.style.cssText = "margin-bottom: 5px";
-						var link = document.createElement('a');
-						link.setAttribute('href', '#');
-						link.appendChild(document.createTextNode("Add"));
-						link.style.cssText = "margin-left: 10px";
-						link.onclick = (function() {
-							var id = data.data[i].id;
-							return function() {
-									onClickLink(id);
-							}
-						})();
-						function onClickLink(id) {
-							$.ajax({
-								url: '/schedule_class',
-								type: 'post',
-								data: {
-									_token: CSRF_TOKEN,
-									lesson: calEvent['id'],
-									user: id
-								},
-								success: onAddSuccess
-							});
-						};
-						function onAddSuccess (data, status, xhr) {
-							console.log("Returned data: ", data);
-							$userDialogContent.dialog("close");
-							$dialogContent.dialog("close");
-							$calendar.weekCalendar("refresh");
-							seeClass($dialogContent, calEvent);
-						}
-						entry.appendChild(link);
-						list_users.appendChild(entry);*/
 	}
 	
 	function editClass($dialogContent, calEvent) {
