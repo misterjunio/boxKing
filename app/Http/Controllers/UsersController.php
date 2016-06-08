@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Mail;
+use Validator;
 
 class UsersController extends Controller
 {		
@@ -56,17 +57,33 @@ class UsersController extends Controller
 	}
 	
 	/**
+	 * Write email to send to all users.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function email_page(Request $request) {
+		return view('users.email_page');
+	}
+	
+	/**
 	 * Send a global e-mail to all users.
 	 *
 	 * @param  Request  $request
 	 * @return Response
 	 */
-	public function sendGlobalEmail(Request $request) {
-		$user = User::where([['admin', false], ['name', '!=', 'Guest']])->get();
-		Mail::send('emails.password', ['user' => $user], function ($message) {
-			$message->from('olimpusbox@gmail.com', 'Olimpus Box');
-			$message->to($user.email);
-			$message->subject('BoxKing password reset');
-		});
+	public function send_email(Request $request) {
+		$errors = $this->validate($request, [
+				'subject' => 'required|max:255',
+				'content' => 'required'
+		]);
+		$users = User::where([['admin', false], ['name', '!=', 'Guest']])->get();
+		foreach ($users as $user) {
+			Mail::raw($request->input('content'), function ($message) use ($request, $user) {
+				$message->to($user['email']);
+				$message->subject($request->input('subject'));
+			});
+		}
+		return redirect('/users');
 	}
 }

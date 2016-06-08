@@ -53,13 +53,13 @@ sub {
   vertical-align: text-bottom;
 }
 
-input, textarea, select {
+input, select {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
 }
 
-input, textarea, select {
+input, select {
 	font-size: 100%;
 }
 

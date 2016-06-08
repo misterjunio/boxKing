@@ -44,3 +44,5 @@ Route::get('/users', 'UsersController@index');
 Route::get('/users/{user}', 'UsersController@show');
 Route::post('/edit_day_limit', 'UsersController@edit_day_limit');
 Route::post('/users_list', 'UsersController@users_list');
+Route::get('/email_page', 'UsersController@email_page');
+Route::post('/send_email', 'UsersController@send_email');

@@ -50,7 +50,7 @@ $(document).ready(function() {
 		},
 		eventNew: function(calEvent, $event) {
 			var $dialogContent = $("#event_edit_container");
-			resetForm($dialogContent);
+			$dialogContent.find("input").val("");
 			var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
 			var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
 			var titleField = $dialogContent.find("input[name='title']");
@@ -158,7 +158,7 @@ $(document).ready(function() {
 	
 	function seeClass($dialogContent, calEvent) {
 		$dialogContent = $("#schedule_class_container");
-		resetForm($dialogContent);
+		$dialogContent.find("input").val("");
 		$("#day_limit_msg").hide();
 		var current_time = (new Date()).getTime();
 		var user_week_lessons = [];
@@ -528,7 +528,7 @@ $(document).ready(function() {
 	
 	function editClass($dialogContent, calEvent) {
 				$dialogContent = $("#event_edit_container");
-				resetForm($dialogContent);
+				$dialogContent.find("input").val("");
 				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
 				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
 				var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
@@ -618,11 +618,6 @@ $(document).ready(function() {
 				(+dateArray[5]),
 				(+dateArray[6])
 		);
-	}
-
-	function resetForm($dialogContent) {
-		$dialogContent.find("input").val("");
-		$dialogContent.find("textarea").val("");
 	}
 
 	function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {

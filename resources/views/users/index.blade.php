@@ -18,6 +18,9 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-md-8 col-md-offset-2">
+				<a href="{{ url('/email_page') }}" type="button" class="btn btn-primary">Send email to everyone</a>
+			</div>
     </div>
 	</div>
 	@include('common.footer')
