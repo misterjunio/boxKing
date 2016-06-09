@@ -90,6 +90,9 @@ $(document).ready(function() {
 	});
 	
 	$('button#send_emails').click(function() {
-		$('<div class=loadingDiv>loading...</div>').prependTo(document.body);
+		$("<div class='alert alert-info'>Please wait while the email is sent...</div>").prependTo($(".flash-message"));
+		$(this).hide();
+		$('#subject').attr('readonly', 'readonly');
+		$('#content').attr('readonly', 'readonly');
 	});
 });
