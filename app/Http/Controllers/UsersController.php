@@ -19,7 +19,7 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function index(Request $request) {
-		return view('users.index', ['users' => User::where([['admin', false], ['name', '!=', 'Guest']])->orderBy('name', 'asc')->paginate(10)]);
+		return view('users.index', ['users' => User::where([['admin', false], ['name', '!=', 'Guest']])->orderBy('name', 'asc')->paginate(15)]);
 	}
 	
 	/**
@@ -29,7 +29,7 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function users_already_paid(Request $request) {
-		return view('users.already_paid', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', true]])->orderBy('name', 'asc')->paginate(10)]);
+		return view('users.already_paid', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', true]])->orderBy('name', 'asc')->paginate(15)]);
 	}
 	
 	/**
@@ -39,7 +39,7 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function users_payment_missing(Request $request) {
-		return view('users.payment_missing', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', false]])->orderBy('name', 'asc')->paginate(10)]);
+		return view('users.payment_missing', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', false]])->orderBy('name', 'asc')->paginate(15)]);
 	}
 		
 	/**
