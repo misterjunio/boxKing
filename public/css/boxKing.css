@@ -86,3 +86,10 @@ ol.formatted li {
 #total_users li {
 	margin-bottom: 1%;
 }
+
+#easteregg {
+	text-align: center;
+	color: red;
+	font-size: 2em;
+	display: none;
+}

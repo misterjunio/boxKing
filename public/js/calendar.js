@@ -675,4 +675,22 @@ $(document).ready(function() {
 				$endTimeField.find("option:eq(3)").attr("selected", "selected");
 		}
 	});
+	
+	var count = 0, easteregg_timer1, easteregg_timer2;
+	$("h1.wc-title").click(function() {
+		if (count == 0) {
+			easteregg_timer1 = window.setTimeout(function() {
+				count = 0;
+			}, 2000);
+		}
+		count++;
+		if (count == 5) {
+			count = 0;
+			window.clearTimeout(easteregg_timer1);
+			$("#easteregg").show();
+			easteregg_timer2 = window.setTimeout(function() {
+				$("#easteregg").hide();
+			}, 750);
+		}
+	});
 });

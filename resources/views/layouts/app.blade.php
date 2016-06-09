@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="<?php echo csrf_token() ?>" />
     <title>BoxKing</title>
+		<link rel="icon" href="{{asset('img/icon.png')}}">
 		<link rel='stylesheet' type='text/css' href="{{asset('css/reset.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('libs/css/smoothness/jquery-ui-1.8.11.custom.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('css/jquery.weekcalendar.css')}}" />
@@ -58,6 +59,10 @@
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->
 		</nav>
+		<div id="easteregg">
+			<img src="{{asset('img/crossgirl.jpg')}}" class="img-rounded" alt="Crossfit Girl">
+			<p>I &lt;3 CROSSFIT</p>
+		</div>
     @yield('content')
 	</body>
 </html>
