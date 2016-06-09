@@ -42,6 +42,8 @@ Route::post('/add_guest', 'CalendarController@add_guest');
 /* Users */
 Route::get('/users', 'UsersController@index');
 Route::get('/users/{user}', 'UsersController@show');
+Route::get('/users/edit/{user}', 'UsersController@edit');
+Route::post('/users/update/{user}', 'UsersController@update');
 Route::post('/edit_day_limit', 'UsersController@edit_day_limit');
 Route::post('/users_list', 'UsersController@users_list');
 Route::get('/email_page', 'UsersController@email_page');

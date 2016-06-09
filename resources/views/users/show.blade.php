@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-	@include('common.errors')
 	<div class="container user_page">
     <div class="row">
 			<div class="col-md-8 col-md-offset-2">
@@ -45,6 +44,11 @@
 					</div>
 				</div>
 			</div>
+			@if (Auth::user()->id == $user->id)
+			<div class="col-md-8 col-md-offset-2">
+				<a href="{{ url('/users/edit/' . $user->id) }}" type="button" class="btn btn-primary">Edit profile</a>
+			</div>
+			@endif
     </div>
 	</div>
 	@include('common.footer')

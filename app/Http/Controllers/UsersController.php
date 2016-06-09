@@ -34,6 +34,36 @@ class UsersController extends Controller
 	}
 		
 	/**
+	 * Edit user profile.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function edit(User $user) {
+		return view('users.edit', ['user' => $user]);
+	}
+		
+	/**
+	 * Update user profile.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function update(Request $request, User $user) {
+		$this->validate($request, [
+        'name' => 'required|max:255',
+        'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+				'password' => 'required|min:6|confirmed'
+    ]);
+		User::where('id', $user['id'])->update([
+				'name' => $request->input('name'),
+				'email' => $request->input('email'),
+				'password' => bcrypt($request->input('password'))
+		]);
+		return redirect('/users/' . $user['id']);
+	}
+		
+	/**
 	 * Edit user's day limit.
 	 *
 	 * @param  Request  $request
@@ -73,7 +103,7 @@ class UsersController extends Controller
 	 * @return Response
 	 */
 	public function send_email(Request $request) {
-		$errors = $this->validate($request, [
+		$this->validate($request, [
 				'subject' => 'required|max:255',
 				'content' => 'required'
 		]);

@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-	@include('common.errors')
 	<div id='calendar'></div>
 	<div id="event_edit_container" style="display: none">
 		<form>
