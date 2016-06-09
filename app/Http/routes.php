@@ -45,6 +45,7 @@ Route::get('/users/{user}', 'UsersController@show');
 Route::get('/users/edit/{user}', 'UsersController@edit');
 Route::post('/users/update/{user}', 'UsersController@update');
 Route::post('/edit_day_limit', 'UsersController@edit_day_limit');
+Route::post('/edit_month_payment', 'UsersController@edit_month_payment');
 Route::post('/users_list', 'UsersController@users_list');
 Route::get('/email_page', 'UsersController@email_page');
 Route::post('/send_email', 'UsersController@send_email');

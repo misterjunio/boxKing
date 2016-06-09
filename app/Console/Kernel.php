@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel {
 		*/
 	protected function schedule(Schedule $schedule) {
 		$schedule->call(function () {
-			$lessons = Lesson::where('start_at', '<=', Carbon::now()->subWeeks(4))->delete();
+			$lessons = Lesson::where('start_at', '<=', Carbon::now()->subWeeks(8))->delete();
 		})->weekly()->sundays()->at('23:59');
 	}
 }

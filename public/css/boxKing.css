@@ -75,7 +75,7 @@ ol.formatted li {
 	margin-top: 3%;
 }
 
-#day_limit_value, #edit_day_limit, #submit_button {
+#edit_day_limit, #submit_day_limit, #edit_month_payment, #submit_month_payment {
 	margin-left: 2%;
 }
 

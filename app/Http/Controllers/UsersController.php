@@ -75,6 +75,18 @@ class UsersController extends Controller
 	}
 		
 	/**
+	 * Edit user's month payment status.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function edit_month_payment(Request $request) {
+		User::where('id', intval($request->input('user')))
+							->update(['current_month_payment' => boolval($request->input('month_payment'))]);
+		return response()->json(boolval($request->input('month_payment')));
+	}
+		
+	/**
 	 * Return users list.
 	 *
 	 * @param  Request  $request

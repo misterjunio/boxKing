@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('guest', function($attribute, $value, $parameters, $validator) {
+            return $value != 'Guest';
+        });
     }
 
     /**

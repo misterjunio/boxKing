@@ -10,7 +10,13 @@
 					<ul id="total_users">
 						@foreach ($users as $user)
 							<li>-> <a href="{{ url('/users/' . $user->id) }}">{{ $user->name }}</a> ({{ $user->email }})
-								- {{ $user->day_limit }} day plan</li>
+								- <b>{{ $user->day_limit }}</b> day plan - current month payment: 
+								@if ($user->current_month_payment)
+									<b>done</b>
+								@else
+									<b>missing</b>
+								@endif
+								</li>
 						@endforeach
 					</ul>
 					{!! $users->links() !!}
