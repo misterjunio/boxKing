@@ -88,4 +88,8 @@ $(document).ready(function() {
 	$('#payment_missing').click(function() {
 		window.location.href = "/users_payment_missing";
 	});
+	
+	$('button#send_emails').click(function() {
+		$('<div class=loadingDiv>loading...</div>').prependTo(document.body);
+	});
 });

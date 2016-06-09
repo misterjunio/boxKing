@@ -63,6 +63,11 @@
 			<img src="{{asset('img/crossgirl.jpg')}}" class="img-rounded" alt="Crossfit Girl">
 			<p>I &lt;3 CROSSFIT</p>
 		</div>
+		@foreach (['danger', 'warning', 'success', 'info'] as $msg)
+			@if(Session::has($msg))
+			<p style="margin: 0 10%" class="alert alert-{{ $msg }}">{{ Session::get($msg) }} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
+			@endif
+		@endforeach
     @yield('content')
 	</body>
 </html>

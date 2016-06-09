@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('pagescript')
+	<script type='text/javascript' src="{{asset('js/users.js')}}"></script>
+@endsection
+
 @section('content')
 <div class="container user_page">
     <div class="row">
@@ -40,7 +44,7 @@
 
                         <div class="form-group">
                             <div class="col-md-9 col-md-offset-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button id="send_emails" type="submit" class="btn btn-primary">
                                     <i class="fa fa-btn fa-user"></i> Send
                                 </button>
                             </div>

@@ -145,6 +145,7 @@ class UsersController extends Controller {
 				$message->subject($request->input('subject'));
 			});
 		}
+		$request->session()->flash('success', 'Email sent');
 		return redirect('/users');
 	}
 }

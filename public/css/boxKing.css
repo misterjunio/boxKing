@@ -89,3 +89,7 @@ ol.formatted li {
 	font-size: 2em;
 	display: none;
 }
+
+#flash-message {
+	margin: 0 10%;
+}
