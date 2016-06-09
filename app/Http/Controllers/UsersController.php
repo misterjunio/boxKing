@@ -11,8 +11,7 @@ use App\Http\Controllers\Controller;
 use Mail;
 use Validator;
 
-class UsersController extends Controller
-{		
+class UsersController extends Controller {
 	/**
 	 * User index.
 	 *
@@ -20,7 +19,27 @@ class UsersController extends Controller
 	 * @return Response
 	 */
 	public function index(Request $request) {
-		return view('users.index', ['users' => User::where([['admin', false], ['name', '!=', 'Guest']])->orderBy('name', 'asc')->paginate(10)]);	
+		return view('users.index', ['users' => User::where([['admin', false], ['name', '!=', 'Guest']])->orderBy('name', 'asc')->paginate(10)]);
+	}
+	
+	/**
+	 * Users who have already paid for the current month index.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function users_already_paid(Request $request) {
+		return view('users.already_paid', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', true]])->orderBy('name', 'asc')->paginate(10)]);
+	}
+	
+	/**
+	 * User who have yet to pay for the current month index.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function users_payment_missing(Request $request) {
+		return view('users.payment_missing', ['users' => User::where([['admin', false], ['name', '!=', 'Guest'], ['current_month_payment', false]])->orderBy('name', 'asc')->paginate(10)]);
 	}
 		
 	/**

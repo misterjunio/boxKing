@@ -76,4 +76,16 @@ $(document).ready(function() {
 		$('#current_month_payment').show();
 		$('#month_payment').hide();
 	});
+	
+	$('#all_users').click(function() {
+		window.location.href = "/users";
+	});
+	
+	$('#already_paid').click(function() {
+		window.location.href = "/users_already_paid";
+	});
+	
+	$('#payment_missing').click(function() {
+		window.location.href = "/users_payment_missing";
+	});
 });

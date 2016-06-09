@@ -41,6 +41,8 @@ Route::post('/add_guest', 'CalendarController@add_guest');
 
 /* Users */
 Route::get('/users', 'UsersController@index');
+Route::get('/users_already_paid', 'UsersController@users_already_paid');
+Route::get('/users_payment_missing', 'UsersController@users_payment_missing');
 Route::get('/users/{user}', 'UsersController@show');
 Route::get('/users/edit/{user}', 'UsersController@edit');
 Route::post('/users/update/{user}', 'UsersController@update');
