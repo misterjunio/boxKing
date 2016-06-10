@@ -114,7 +114,7 @@ class UsersController extends Controller {
 	public function users_list(Request $request) {
 		$lesson = Lesson::find(intval($request->input('lesson')));
 		$ids = $lesson->users()->lists('user_id');
-		return response()->json(User::where([['admin', false], ['name', '!=', 'Guest']])->whereNotIn('id', $ids)->orderBy('name', 'asc')->paginate(8));
+		return response()->json(User::where([['admin', false], ['name', '!=', 'Guest']])->whereNotIn('id', $ids)->orderBy('name', 'asc')->paginate(5));
 	}
 	
 	/**

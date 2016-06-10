@@ -371,7 +371,7 @@ $(document).ready(function() {
 			list_users.innerHTML = '';
 			for (var i = 0; i < data.data.length; i++) {
 				var entry = document.createElement('li');
-				entry.appendChild(document.createTextNode(data.data[i].name + " - " + data.data[i].email));
+				entry.appendChild(document.createTextNode(data.data[i].name));
 				if (i == 0) {
 					entry.style.cssText = "margin-bottom: 1%; margin-top: 5%";
 				}
@@ -381,7 +381,9 @@ $(document).ready(function() {
 				var link = document.createElement('a');
 				link.setAttribute('href', '#');
 				link.appendChild(document.createTextNode("Add"));
-				link.style.cssText = "margin-left: 10px";
+				link.style.cssText = "float: right; margin-right: 3%";
+				var boldNode = document.createElement("b");
+				boldNode.appendChild(link);
 				link.onclick = (function() {
 					var id = data.data[i].id;
 					return function() {
@@ -407,8 +409,9 @@ $(document).ready(function() {
 					$calendar.weekCalendar("refresh");
 					seeClass($dialogContent, calEvent);
 				}
-				entry.appendChild(link);
+				entry.appendChild(boldNode);
 				list_users.appendChild(entry);
+				list_users.appendChild(document.createElement('hr'));
 			}
 			var buttons_guest = {};
 			if (button_guest == 0) {
