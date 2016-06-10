@@ -49,59 +49,65 @@ $(document).ready(function() {
 			return false;
 		},
 		eventNew: function(calEvent, $event) {
-			var $dialogContent = $("#event_edit_container");
-			$dialogContent.find("input").val("");
-			var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
-			var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
-			var titleField = $dialogContent.find("input[name='title']");
-			var maxPeopleField = $dialogContent.find("input[name='max_p']");
-			var lesson = {};
+			var time_now = new Date();
+			if (calEvent.start > time_now.setTime(time_now.getTime() + 60*60*1000)) {
+				var $dialogContent = $("#event_edit_container");
+				$dialogContent.find("input").val("");
+				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+				var titleField = $dialogContent.find("input[name='title']");
+				var maxPeopleField = $dialogContent.find("input[name='max_p']");
+				var lesson = {};
 
-			$dialogContent.dialog({
-				modal: true,
-				title: "New lesson",
-				close: function() {
-					$dialogContent.dialog("destroy");
-					$dialogContent.hide();
-					$('#calendar').weekCalendar("removeUnsavedEvents");
-				},
-				buttons: {
-					save : function() {
-						calEvent.start = new Date(startField.val());
-						calEvent.end = new Date(endField.val());
-						calEvent.title = titleField.val();
-
-						$calendar.weekCalendar("removeUnsavedEvents");
-						$calendar.weekCalendar("updateEvent", calEvent);
-						$dialogContent.dialog("close");
-						lesson['start_at'] = calEvent['start'].getTime()/1000;
-						lesson['end_at'] = calEvent['end'].getTime()/1000;
-						lesson['type'] = calEvent['title'];
-						lesson['max_participants'] = maxPeopleField.val();
-						$.ajax({
-							url: '/store_lesson',
-							type: 'post',
-							data: {
-								_token: CSRF_TOKEN,
-								lesson: lesson,
-							},
-							success: onSuccess
-						});
-
-						function onSuccess(data, status, xhr)	{
-							console.log("Returned data: ", data);
-							calEvent.id = data.id;
-							$calendar.weekCalendar("refresh");
-						}
+				$dialogContent.dialog({
+					modal: true,
+					title: "New lesson",
+					close: function() {
+						$dialogContent.dialog("destroy");
+						$dialogContent.hide();
+						$('#calendar').weekCalendar("removeUnsavedEvents");
 					},
-					cancel : function() {
-						$dialogContent.dialog("close");
-					}
-				}
-			}).show();
+					buttons: {
+						save : function() {
+							calEvent.start = new Date(startField.val());
+							calEvent.end = new Date(endField.val());
+							calEvent.title = titleField.val();
 
-			$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
-			setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+							$calendar.weekCalendar("removeUnsavedEvents");
+							$calendar.weekCalendar("updateEvent", calEvent);
+							$dialogContent.dialog("close");
+							lesson['start_at'] = calEvent['start'].getTime()/1000;
+							lesson['end_at'] = calEvent['end'].getTime()/1000;
+							lesson['type'] = calEvent['title'];
+							lesson['max_participants'] = maxPeopleField.val();
+							$.ajax({
+								url: '/store_lesson',
+								type: 'post',
+								data: {
+									_token: CSRF_TOKEN,
+									lesson: lesson,
+								},
+								success: onSuccess
+							});
+
+							function onSuccess(data, status, xhr)	{
+								console.log("Returned data: ", data);
+								calEvent.id = data.id;
+								$calendar.weekCalendar("refresh");
+							}
+						},
+						cancel : function() {
+							$dialogContent.dialog("close");
+						}
+					}
+				}).show();
+
+				$dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+				setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+			}
+			else {
+				$('#calendar').weekCalendar("removeUnsavedEvents");
+			}
 		},
 		eventClick: function(calEvent, $event) {
 			if (calEvent.readOnly) {
@@ -690,7 +696,7 @@ $(document).ready(function() {
 			$("#easteregg").show();
 			easteregg_timer2 = window.setTimeout(function() {
 				$("#easteregg").hide();
-			}, 750);
+			}, 1000);
 		}
 	});
 });
