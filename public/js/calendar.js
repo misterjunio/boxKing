@@ -245,7 +245,9 @@ $(document).ready(function() {
 					var a = document.createElement("a");
 					a.setAttribute('href', '#');
 					a.appendChild(document.createTextNode("Remove"));
-					a.style.cssText = "margin-left: 10px";
+					a.style.cssText = "margin-left: 10px; float: right; margin-right: 3%";
+					var boldNode = document.createElement("b");
+					boldNode.appendChild(a);
 					a.onclick = (function() {
 						var id = data[i].id;
 						return function() {
@@ -270,7 +272,7 @@ $(document).ready(function() {
 						$calendar.weekCalendar("refresh");
 						seeClass($dialogContent, calEvent);
 					}
-					entry.appendChild(a);
+					entry.appendChild(boldNode);
 				}
 				list_participants.appendChild(entry);
 			}
