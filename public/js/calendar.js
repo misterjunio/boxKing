@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$calendar.weekCalendar({
 		readonly: !user.admin,
 		use24Hour: true,
-		timeslotHeight: 9.5,
+		timeslotHeight: 9,
 		timeSeparator: ' - ',
 		defaultEventLength: 4,
 		dateFormat: 'F d',

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="<?php echo csrf_token() ?>" />
-    <title>BoxKing</title>
+    <title>OlimpusBox</title>
 		<link rel="icon" href="{{asset('img/icon.png')}}">
 		<link rel='stylesheet' type='text/css' href="{{asset('css/reset.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('libs/css/smoothness/jquery-ui-1.8.11.custom.css')}}" />
