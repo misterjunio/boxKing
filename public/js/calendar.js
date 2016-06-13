@@ -206,15 +206,18 @@ $(document).ready(function() {
 					button_guest = 1;
 				}
 				var entry = document.createElement('li');
+				var entryText = document.createElement('p');
 				if (i >= calEvent.max_participants) {
 					var italicNode = document.createElement("i");
 					italicNode.appendChild(document.createTextNode("(R) "));
-					entry.appendChild(italicNode);
+					entryText.appendChild(italicNode);
+					entry.appendChild(entryText);
 				}
 				if (data[i].id == user.id) {
 					var boldNode = document.createElement("b");
 					boldNode.appendChild(document.createTextNode(data[i].name));
-					entry.appendChild(boldNode);
+					entryText.appendChild(boldNode);
+					entry.appendChild(entryText);
 					if (calEvent.start.getTime() - 3600000 > current_time) {
 						buttons = {
 							'cancel class': function() {
@@ -239,13 +242,15 @@ $(document).ready(function() {
 					}
 				}
 				else {
-					entry.appendChild(document.createTextNode(data[i].name));
+					entryText.appendChild(document.createTextNode(data[i].name));
+					entry.appendChild(entryText);
 				}
 				if (user.admin && calEvent.start.getTime() - 3600000 > current_time) {
+					entryText.style.cssText = "display: inline-block; max-width: 65%";
 					var a = document.createElement("a");
 					a.setAttribute('href', '#');
 					a.appendChild(document.createTextNode("Remove"));
-					a.style.cssText = "margin-left: 10px; float: right; margin-right: 3%";
+					a.style.cssText = "margin: 0 3%; float: right";
 					var boldNode = document.createElement("b");
 					boldNode.appendChild(a);
 					a.onclick = (function() {
