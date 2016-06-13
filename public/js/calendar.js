@@ -91,7 +91,6 @@ $(document).ready(function() {
 							});
 
 							function onSuccess(data, status, xhr)	{
-								console.log("Returned data: ", data);
 								calEvent.id = data.id;
 								$calendar.weekCalendar("refresh");
 							}
@@ -197,7 +196,6 @@ $(document).ready(function() {
 		});
 
 		function onSuccess(data, status, xhr)	{
-			console.log("Returned data: ", data);
 			var list_participants = document.getElementById('list_participants');
 			list_participants.innerHTML = '';
 			var buttons = {};
@@ -206,18 +204,19 @@ $(document).ready(function() {
 					button_guest = 1;
 				}
 				var entry = document.createElement('li');
-				var entryText = document.createElement('p');
+				var entryLink = document.createElement('a');
+				entryLink.setAttribute('href', '/users/' + data[i].id);
 				if (i >= calEvent.max_participants) {
 					var italicNode = document.createElement("i");
 					italicNode.appendChild(document.createTextNode("(R) "));
-					entryText.appendChild(italicNode);
-					entry.appendChild(entryText);
+					entryLink.appendChild(italicNode);
+					entry.appendChild(entryLink);
 				}
 				if (data[i].id == user.id) {
 					var boldNode = document.createElement("b");
 					boldNode.appendChild(document.createTextNode(data[i].name));
-					entryText.appendChild(boldNode);
-					entry.appendChild(entryText);
+					entryLink.appendChild(boldNode);
+					entry.appendChild(entryLink);
 					if (calEvent.start.getTime() - 3600000 > current_time) {
 						buttons = {
 							'cancel class': function() {
@@ -242,11 +241,11 @@ $(document).ready(function() {
 					}
 				}
 				else {
-					entryText.appendChild(document.createTextNode(data[i].name));
-					entry.appendChild(entryText);
+					entryLink.appendChild(document.createTextNode(data[i].name));
+					entry.appendChild(entryLink);
 				}
-				if (user.admin && calEvent.start.getTime() - 3600000 > current_time) {
-					entryText.style.cssText = "display: inline-block; max-width: 65%";
+				if (user.admin && calEvent.end.getTime() > current_time) {
+					entryLink.style.cssText = "display: inline-block; max-width: 65%";
 					var a = document.createElement("a");
 					a.setAttribute('href', '#');
 					a.appendChild(document.createTextNode("Remove"));
@@ -272,7 +271,6 @@ $(document).ready(function() {
 						});
 					};
 					function onRemoveSuccess (data, status, xhr) {
-						console.log("Returned data: ", data);
 						$dialogContent.dialog("close");
 						$calendar.weekCalendar("refresh");
 						seeClass($dialogContent, calEvent);
@@ -332,6 +330,25 @@ $(document).ready(function() {
 					};
 				}
 			}
+			else if (calEvent.end.getTime() > current_time && user.admin) {
+				buttons = {
+					'add user': (function() {
+							var $dialogContent2 = $dialogContent;
+							var calEvent2 = calEvent;
+							var page = 0;
+							return function() {
+									populate_add_users($dialogContent2, calEvent2, page);
+							}
+						})(),
+					'edit class': function() {
+						$dialogContent.dialog("close");
+						editClass($dialogContent, calEvent);
+					},
+					cancel: function() {
+						$dialogContent.dialog("close");
+					}
+				};
+			}
 			else {
 				buttons = {
 					cancel: function() {
@@ -340,7 +357,6 @@ $(document).ready(function() {
 				};
 			}
 			function onScheduleSuccess(data, status, xhr) {
-				console.log("Returned data: ", data);
 				user_lessons = data;
 				$calendar.weekCalendar("refresh");
 			}
@@ -373,7 +389,6 @@ $(document).ready(function() {
 			success: onUsersSuccess
 		});
 		function onUsersSuccess(data, status, xhr)	{
-			console.log("Returned data: ", data);
 			var list_users = document.getElementById('list_users');
 			list_users.innerHTML = '';
 			for (var i = 0; i < data.data.length; i++) {
@@ -410,7 +425,6 @@ $(document).ready(function() {
 					});
 				};
 				function onAddSuccess(data, status, xhr) {
-					console.log("Returned data: ", data);
 					$userDialogContent.dialog("close");
 					$dialogContent.dialog("close");
 					$calendar.weekCalendar("refresh");
@@ -458,7 +472,6 @@ $(document).ready(function() {
 				buttons: buttons_guest
 			}).show();
 			function onAddGuestSuccess(data, status, xhr) {
-				console.log("Returned data: ", data);
 				$userDialogContent.dialog("close");
 				$dialogContent.dialog("close");
 				$calendar.weekCalendar("refresh");
@@ -587,7 +600,6 @@ $(document).ready(function() {
 							});
 	
 							function onSuccess(data, status, xhr)	{
-								console.log("Returned data: ", data);
 								$calendar.weekCalendar("refresh");
 							}
 						},
@@ -607,7 +619,6 @@ $(document).ready(function() {
 							}
 	
 							function onSuccess(data, status, xhr)	{
-								console.log("Returned data: ", data);
 							}
 						},
 						cancel : function() {
