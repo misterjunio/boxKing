@@ -36,23 +36,25 @@
 									<button id="edit_day_limit" type="button" class="btn btn-default">Edit</button>
 								@endif
 							</div>
-							<div class="col-md-12 profile_entry">
-								<label for="month_payment">Current month payment:</label>
-								<span id="current_month_payment">
-									@if ($user->current_month_payment)
-										done
-									@else
-										missing
-									@endif
-								</span>
-								<div id="month_payment" style="display: none">
-									<select id="month_payment_value" style="max-width:90%">
-										<option @if ($user->current_month_payment) selected="selected" @endif value="{{ $user->id }}">done</option>
-										<option @if (!$user->current_month_payment) selected="selected" @endif value="{{ $user->id }}">missing</option>
-									</select>
-									<button type="button" class="btn btn-default" id="submit_month_payment">Submit</button>
-									<button type="button" class="btn btn-default" id="cancel_month_payment">Cancel</button>
-								</div>
+							@if (Auth::user()->id == $user->id || Auth::user()->admin)
+								<div class="col-md-12 profile_entry">
+									<label for="month_payment">Current month payment:</label>
+									<span id="current_month_payment">
+										@if ($user->current_month_payment)
+											done
+										@else
+											missing
+										@endif
+									</span>
+									<div id="month_payment" style="display: none">
+										<select id="month_payment_value" style="max-width:90%">
+											<option @if ($user->current_month_payment) selected="selected" @endif value="{{ $user->id }}">done</option>
+											<option @if (!$user->current_month_payment) selected="selected" @endif value="{{ $user->id }}">missing</option>
+										</select>
+										<button type="button" class="btn btn-default" id="submit_month_payment">Submit</button>
+										<button type="button" class="btn btn-default" id="cancel_month_payment">Cancel</button>
+									</div>
+								@endif
 								@if (Auth::user()->admin)
 									<button id="edit_month_payment" type="button" class="btn btn-default">Edit</button>
 								@endif
