@@ -8,7 +8,7 @@ $(document).ready(function() {
 				data: {
 					_token: CSRF_TOKEN,
 					first_day: $('#calendar').weekCalendar("getCurrentFirstDay").getTime()/1000,
-					last_day: $('#calendar').weekCalendar("getCurrentLastDay").getTime()/1000,
+					last_day: $('#calendar').weekCalendar("getCurrentLastDay").getTime()/1000 + 172800,
 				},
 				success: onSuccess
 			});
