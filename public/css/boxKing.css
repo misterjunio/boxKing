@@ -90,6 +90,10 @@ ol.formatted li {
 	display: none;
 }
 
+#easteregg img {
+	max-width: 30%;
+}
+
 #flash-message {
 	margin: 0 10%;
 }
