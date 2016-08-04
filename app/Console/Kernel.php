@@ -31,6 +31,6 @@ class Kernel extends ConsoleKernel {
 		
 		$schedule->call(function () {
 			User::where('current_month_payment', true)->update(['current_month_payment' => false]);
-		})->monthlyOn(4, '02:17');
+		})->monthlyOn(1, '00:01');
 	}
 }
