@@ -60,7 +60,7 @@
 			</div><!-- /.container-fluid -->
 		</nav>
 		<div id="easteregg">
-			<img src="{{asset('img/crossgirl_2.jpg')}}" class="img-rounded" alt="Crossfit Girl">
+			<img src="{{asset('img/crossgirl_3.jpg')}}" class="img-rounded" alt="Crossfit Girl">
 			<p>I &lt;3 CROSSFIT</p>
 		</div>
 		<div class="flash-message">
