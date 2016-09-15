@@ -11,7 +11,7 @@ class Lesson extends Model
      *
      * @var array
      */
-    protected $fillable = ['start_at', 'end_at', 'type', 'max_participants', 'no_participants',
+    protected $fillable = ['start_at', 'end_at', 'type', 'max_participants', 'no_participants', 'color',
 		 'created_at', 'updated_at'];
 		
 		/**

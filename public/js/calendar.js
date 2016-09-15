@@ -28,7 +28,24 @@ $(document).ready(function() {
 		},
 		eventRender: function(calEvent, $event) {
 			calEvent.title = calEvent.title + " (" + calEvent.no_participants + "/" + calEvent.max_participants + ")";
-			var i = 0;
+			switch (calEvent.color) {
+				case 'blue':
+					$event.css("backgroundColor", "blue");
+					$event.children().css("backgroundColor", "blue");
+					break;
+				case 'red':
+					$event.css("backgroundColor", "red");
+					$event.children().css("backgroundColor", "red");
+					break;
+				case 'green':
+					$event.css("backgroundColor", "green");
+					$event.children().css("backgroundColor", "green");
+					break;
+				case 'purple':
+					$event.css("backgroundColor", "purple");
+					$event.children().css("backgroundColor", "purple");
+					break;
+			}
 			for (i = 0; i < user_lessons.length; i++) {
 				if (calEvent.id == user_lessons[i].id) {
 					$event.css("backgroundColor", "#aaa");
@@ -56,6 +73,7 @@ $(document).ready(function() {
 				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
 				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
 				var titleField = $dialogContent.find("input[name='title']");
+				var colorField = $dialogContent.find("select[name='color']");
 				var maxPeopleField = $dialogContent.find("input[name='max_p']");
 				var lesson = {};
 
@@ -72,6 +90,7 @@ $(document).ready(function() {
 							calEvent.start = new Date(startField.val());
 							calEvent.end = new Date(endField.val());
 							calEvent.title = titleField.val();
+							calEvent.color = colorField.val();
 
 							$calendar.weekCalendar("removeUnsavedEvents");
 							$calendar.weekCalendar("updateEvent", calEvent);
@@ -79,6 +98,7 @@ $(document).ready(function() {
 							lesson['start_at'] = calEvent['start'].getTime()/1000;
 							lesson['end_at'] = calEvent['end'].getTime()/1000;
 							lesson['type'] = calEvent['title'];
+							lesson['color'] = calEvent['color'];
 							lesson['max_participants'] = maxPeopleField.val();
 							$.ajax({
 								url: '/store_lesson',
@@ -133,6 +153,7 @@ $(document).ready(function() {
 								"title": data[i]['type'],
 								"max_participants": data[i]['max_participants'],
 								"no_participants": data[i]['no_participants'],
+								"color": data[i]['color']
 						};
 				}
 				callback(lessons);
@@ -561,6 +582,7 @@ $(document).ready(function() {
 				var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
 				var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
 				var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
+				var colorField = $dialogContent.find("select[name='color']").val(calEvent.color);
 				var maxPeopleField = $dialogContent.find("input[name='max_p']");
 				var lesson = {};
 				var clicked_lesson = $.grep(lessons, function(l) {
@@ -581,6 +603,7 @@ $(document).ready(function() {
 							calEvent.start = new Date(startField.val());
 							calEvent.end = new Date(endField.val());
 							calEvent.title = titleField.val();
+							calEvent.color = colorField.val();
 
 							$calendar.weekCalendar("updateEvent", calEvent);
 							$dialogContent.dialog("close");
@@ -588,6 +611,7 @@ $(document).ready(function() {
 							lesson['start_at'] = calEvent['start'].getTime()/1000;
 							lesson['end_at'] = calEvent['end'].getTime()/1000;
 							lesson['type'] = calEvent['title'];
+							lesson['color'] = calEvent['color'];
 							lesson['max_participants'] = maxPeopleField.val();
 							$.ajax({
 									url: '/edit_lesson',

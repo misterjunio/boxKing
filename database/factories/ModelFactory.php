@@ -31,6 +31,7 @@ $factory->define(App\Lesson::class, function (Faker\Generator $faker) {
 				'start_at' => $start_at,
         'end_at' => $end_at,
         'type' => 'WOD',
+				'color' => '000000',
         'max_participants' => 15,
         'no_participants' => rand(0, 15),
     ];

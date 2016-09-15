@@ -97,3 +97,19 @@ ol.formatted li {
 #flash-message {
 	margin: 0 10%;
 }
+
+select#color_input > #blue_color {
+    background-color: blue;
+}
+
+select#color_input  > #red_color {
+    background-color: red;
+}
+
+select#color_input  > #green_color {
+    background-color: green;
+}
+
+select#color_input  > #purple_color {
+    background-color: purple;
+}

@@ -82,7 +82,7 @@ class CalendarController extends Controller
 		
 		$lesson_r = Lesson::create(
 			['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-			'max_participants' => intval($lesson['max_participants'])]
+			'max_participants' => intval($lesson['max_participants']), 'color' => $lesson['color']]
 		);
 		return response()->json($lesson_r);
 	}
@@ -101,7 +101,8 @@ class CalendarController extends Controller
 		$end_at->setTimestamp($lesson['end_at']);
 		$lesson_r = Lesson::where('id', intval($lesson['id']))
 							->update(['start_at' => $start_at, 'end_at' => $end_at, 'type' => $lesson['type'],
-			'max_participants' => intval($lesson['max_participants']), 'updated_at' => Carbon::now()]);
+			'max_participants' => intval($lesson['max_participants']), 'updated_at' => Carbon::now(),
+			'color' => $lesson['color']]);
 		return response()->json($lesson_r);
 	}
 		

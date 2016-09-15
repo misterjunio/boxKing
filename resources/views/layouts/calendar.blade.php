@@ -31,6 +31,15 @@
 					<input type="text" name="title" />
 				</li>
 				<li>
+					<label for="color">Color:</label>
+					<select name="color" id="color_input">
+						<option id="blue_color" value="blue">Blue</option>
+						<option id="red_color" value="red">Red</option>
+						<option id="green_color" value="green">Green</option>
+						<option id="purple_color" value="purple">Purple</option>
+					</select>
+				</li>
+				<li>
 					<label for="max_p">Max. people:</label>
 					<input id="max_p" type="number" name="max_p" min="1" value="15" />
 				</li>
