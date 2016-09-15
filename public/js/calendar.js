@@ -45,6 +45,10 @@ $(document).ready(function() {
 					$event.css("backgroundColor", "purple");
 					$event.children().css("backgroundColor", "purple");
 					break;
+				case 'brown':
+					$event.css("backgroundColor", "brown");
+					$event.children().css("backgroundColor", "brown");
+					break;
 			}
 			for (i = 0; i < user_lessons.length; i++) {
 				if (calEvent.id == user_lessons[i].id) {

@@ -113,3 +113,7 @@ select#color_input  > #green_color {
 select#color_input  > #purple_color {
     background-color: purple;
 }
+
+select#color_input  > #brown_color {
+    background-color: brown;
+}

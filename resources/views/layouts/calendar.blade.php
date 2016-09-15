@@ -37,6 +37,7 @@
 						<option id="red_color" value="red">Red</option>
 						<option id="green_color" value="green">Green</option>
 						<option id="purple_color" value="purple">Purple</option>
+						<option id="brown_color" value="brown">Brown</option>
 					</select>
 				</li>
 				<li>
