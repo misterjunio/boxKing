@@ -46,6 +46,7 @@ Route::get('/users_payment_missing', 'UsersController@users_payment_missing');
 Route::get('/users/{user}', 'UsersController@show');
 Route::get('/users/edit/{user}', 'UsersController@edit');
 Route::post('/users/update/{user}', 'UsersController@update');
+Route::post('/users/remove/{user}', 'UsersController@destroy');
 Route::post('/edit_day_limit', 'UsersController@edit_day_limit');
 Route::post('/edit_month_payment', 'UsersController@edit_month_payment');
 Route::post('/users_list', 'UsersController@users_list');

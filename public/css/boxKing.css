@@ -71,16 +71,12 @@ ol.formatted li {
 	margin-bottom: 0;
 }
 
-.user_page {
+.user_page, .profile_entry {
 	margin-top: 3%;
 }
 
 #edit_day_limit, #submit_day_limit, #edit_month_payment, #submit_month_payment, .line_item {
 	margin-left: 2%;
-}
-
-.profile_entry {
-	margin-top: 3%;
 }
 
 #easteregg {

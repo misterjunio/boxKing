@@ -83,6 +83,17 @@ class UsersController extends Controller {
 	}
 		
 	/**
+	 * Remove user profile.
+	 *
+	 * @param  Request  $request
+	 * @return Response
+	 */
+	public function destroy(Request $request, User $user) {
+		User::where('id', $user['id'])->delete();
+		return redirect('/users');
+	}
+		
+	/**
 	 * Edit user's day limit.
 	 *
 	 * @param  Request  $request

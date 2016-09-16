@@ -59,6 +59,12 @@
 									<button id="edit_month_payment" type="button" class="btn btn-default">Edit</button>
 								@endif
 							</div>
+							@if (Auth::user()->admin)
+								<form class="form-horizontal" role="form" method="POST" action="{{ url('/users/remove/' . $user->id) }}" onsubmit="return validate_delete_user()">
+									{{ csrf_field() }}
+									<button type="submit" class="btn btn-danger user_page">Delete user</button>
+							</form>
+							@endif
 						@else
 							<div class="col-md-12 profile_entry">
 								<label for="admin">Admin</label>

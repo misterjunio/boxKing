@@ -95,4 +95,11 @@ $(document).ready(function() {
 		$('#subject').attr('readonly', 'readonly');
 		$('#content').attr('readonly', 'readonly');
 	});
+	
+	validate_delete_user = function() {
+		if (window.confirm("Are you sure you want to delete this user?")) {
+			return true;
+		}
+		return false;
+	};
 });
