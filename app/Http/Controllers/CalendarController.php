@@ -179,7 +179,8 @@ class CalendarController extends Controller
 			$lessons[$i]['end_at'] = $end_at->modify('+1 week');
 			Lesson::create(
 				['start_at' => $lessons[$i]['start_at'], 'end_at' => $lessons[$i]['end_at'], 
-				'type' => $lessons[$i]['type'],	'max_participants' => $lessons[$i]['max_participants']]);
+				'type' => $lessons[$i]['type'],	'max_participants' => $lessons[$i]['max_participants'],
+				'color' => $lesson['color']]);
 		}
 		return response()->json($lessons);
 	}
