@@ -203,7 +203,7 @@ $(document).ready(function() {
 		var distinct_days = [];
 		var day;
 		for (var lesson in user_week_lessons) {
-		day = dateStringToDate(user_week_lessons[lesson].start_at).getDay();
+			day = dateStringToDate(user_week_lessons[lesson].start_at).getDay();
 			if (typeof(unique[day]) == "undefined") {
 				distinct_days.push(day);
 			}
@@ -306,7 +306,8 @@ $(document).ready(function() {
 			}
 			if (calEvent.start.getTime() - 3600000 > current_time) {
 				if ($.isEmptyObject(buttons) && !user.admin) {
-					if (distinct_days.length < user.day_limit || $.inArray(calEvent.start.getDay(), distinct_days) != -1) {
+					if (($.inArray(calEvent.start.getDay(), distinct_days) != -1) || (distinct_days.length < user.day_limit
+						&& !(distinct_days.length >= 1 && !user.current_month_payment && (new Date()).getDate() > 8))) {
 						buttons = {
 							'schedule class': function() {
 								$dialogContent.dialog("close");
@@ -327,7 +328,15 @@ $(document).ready(function() {
 						};
 					}
 					else {
-						$("#day_limit_msg").append(" of " + user.day_limit + " days").show();
+						$("#day_limit_span").empty();
+						if (distinct_days.length >= 1 && !user.current_month_payment && (new Date()).getDate() > 8) {
+							$("#day_limit_span").append(" of 1 day. Please proceed with this month's payment as soon as possible" +
+							" to get back to your usual day plan");
+						}
+						else {
+							$("#day_limit_span").append(" of " + user.day_limit + " days");
+						}
+						$("#day_limit_msg").show();
 						buttons = {
 							cancel: function() {
 								$dialogContent.dialog("close");

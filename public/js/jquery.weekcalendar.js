@@ -513,7 +513,7 @@
         return this._dateFirstDayOfWeek(this.options.date || new Date());
       },
       getCurrentLastDay: function() {
-        return this._addDays(this.getCurrentFirstDay(), this.options.daysToShow - 1);
+        return this._addDays(this.getCurrentFirstDay(), this.options.daysToShow);
       },
 
       /*********************

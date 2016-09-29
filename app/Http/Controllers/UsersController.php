@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Mail;
 use Validator;
+use Carbon\Carbon;
 
 class UsersController extends Controller {
 	/**
@@ -49,7 +50,7 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function show(User $user) {
-		return view('users.show', ['user' => $user]);
+		return view('users.show', ['user' => $user, 'day_of_month' => Carbon::now()->day]);
 	}
 		
 	/**

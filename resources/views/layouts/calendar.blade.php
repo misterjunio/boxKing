@@ -50,7 +50,8 @@
 	<div id="schedule_class_container" style="display: none">
 		<form>
 			<input type="hidden" />
-			<p id="day_limit_msg" style="display:none; color:red">You have reached your day limit</p>
+			<p id="day_limit_msg" style="display:none; color:red">You have reached your day limit
+				<span id="day_limit_span"></span></p>
 			<ul>
 				<li>
 					<span>Date:</span>

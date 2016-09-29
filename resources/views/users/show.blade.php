@@ -22,7 +22,11 @@
 						@if (!$user->admin)
 							<div class="col-md-12 profile_entry">
 								<label for="day_limit">Day limit:</label>
-								<span id="current_day_limit">{{ $user->day_limit }}</span>
+								<span id="current_day_limit">{{ $user->day_limit }}
+									@if (!$user->current_month_payment && $day_of_month > 8)
+										(currently <b>1</b> due to missing payment)
+									@endif
+								</span>
 								<div id="day_limit" style="display: none">
 									<select id="day_limit_value" style="width:40px">
 										<option @if ($user->day_limit == 2) selected="selected" @endif value="{{ $user->id }}">2</option>
