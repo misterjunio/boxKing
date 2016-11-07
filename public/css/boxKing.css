@@ -84,6 +84,7 @@ ol.formatted li {
 	color: red;
 	font-size: 2em;
 	display: none;
+	margin-top: 20px;
 }
 
 #easteregg img {

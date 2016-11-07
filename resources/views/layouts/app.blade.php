@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="<?php echo csrf_token() ?>" />
-    <title>OlimpusBox</title>
+    <title>CrossfitOneStepAhead</title>
 		<link rel="icon" href="{{asset('img/icon.png')}}">
 		<link rel='stylesheet' type='text/css' href="{{asset('css/reset.css')}}" />
 		<link rel='stylesheet' type='text/css' href="{{asset('libs/css/smoothness/jquery-ui-1.8.11.custom.css')}}" />
@@ -33,7 +33,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand"  href="{{ url('/') }}">OlimpusBox @ BoxKing</a>
+					<a class="navbar-brand"  href="{{ url('/') }}">CrossfitOneStepAhead @ BoxKing</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
@@ -60,7 +60,7 @@
 			</div><!-- /.container-fluid -->
 		</nav>
 		<div id="easteregg">
-			<img src="{{asset('img/crossgirl_3.jpg')}}" class="img-rounded" alt="Crossfit Girl">
+			<img src="{{asset('img/crossgirl_4.jpg')}}" class="img-rounded" alt="Crossfit Girl">
 			<p>I &lt;3 CROSSFIT</p>
 		</div>
 		<div class="flash-message">
