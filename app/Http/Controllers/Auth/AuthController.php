@@ -66,6 +66,7 @@ class AuthController extends Controller {
 			'day_limit' => 0,
 			'admin' => false,
 			'current_month_payment' => false,
+			'mornings' => false
 		]);
 	}
 }

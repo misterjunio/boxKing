@@ -22,16 +22,17 @@
 						@if (!$user->admin)
 							<div class="col-md-12 profile_entry">
 								<label for="day_limit">Day limit:</label>
-								<span id="current_day_limit">{{ $user->day_limit }}
+								<span id="current_day_limit">@if ($user->mornings)Only mornings @else {{ $user->day_limit }} @endif
 									@if (!$user->current_month_payment && $day_of_month > 8)
 										(currently <b>1</b> due to missing payment)
 									@endif
 								</span>
 								<div id="day_limit" style="display: none">
-									<select id="day_limit_value" style="width:40px">
+									<select id="day_limit_value"">
 										<option @if ($user->day_limit == 2) selected="selected" @endif value="{{ $user->id }}">2</option>
 										<option @if ($user->day_limit == 3) selected="selected" @endif value="{{ $user->id }}">3</option>
 										<option @if ($user->day_limit == 7) selected="selected" @endif value="{{ $user->id }}">7</option>
+										<option @if ($user->mornings) selected="selected" @endif value="{{ $user->id }}">Only mornings</option>
 									</select>
 									<button type="button" class="btn btn-default" id="submit_day_limit">Submit</button>
 									<button type="button" class="btn btn-default" id="cancel_day_limit">Cancel</button>

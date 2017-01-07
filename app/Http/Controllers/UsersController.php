@@ -101,8 +101,12 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function edit_day_limit(Request $request) {
+		if (strcmp($request->input('day_limit'), 'Only mornings') == 0) {
+			return response()->json(User::where('id', intval($request->input('user')))
+								->update(['day_limit' => 7, 'mornings' => true]));
+		}
 		return response()->json(User::where('id', intval($request->input('user')))
-							->update(['day_limit' => intval($request->input('day_limit'))]));
+							->update(['day_limit' => intval($request->input('day_limit')), 'mornings' => false]));
 	}
 		
 	/**

@@ -307,33 +307,33 @@ $(document).ready(function() {
 			if (calEvent.start.getTime() - 3600000 > current_time) {
 				var current_date = new Date(current_time);
 				var previous_day = new Date(calEvent.start.getTime()-24*60*60*1000);
-				console.log("calEvent.start.getTime()", calEvent.start.getHours());
-				console.log("current_date", current_date);
-				console.log("previous_day", previous_day);
-				if (calEvent.start.getHours() < 9 && ((current_date.getHours() < 22 && current_date.getDay() == previous_day.getDay())
+				if (calEvent.start.getHours() > 9 || (calEvent.start.getHours() < 9 &&
+				((current_date.getHours() < 22 && current_date.getDay() == previous_day.getDay())
 				|| (current_date.getDay() < previous_day.getDay() && current_date.getMonth() == previous_day.getMonth())
-				|| (current_date.getMonth() < previous_day.getMonth()))) {
+				|| (current_date.getMonth() < previous_day.getMonth())))) {
 					if ($.isEmptyObject(buttons) && !user.admin) {
 						if (($.inArray(calEvent.start.getDay(), distinct_days) != -1) || (distinct_days.length < user.day_limit
 							&& !(distinct_days.length >= 1 && !user.current_month_payment && (new Date()).getDate() > 8))) {
-							buttons = {
-								'schedule class': function() {
-									$dialogContent.dialog("close");
-									$.ajax({
-										url: '/schedule_class',
-										type: 'post',
-										data: {
-											_token: CSRF_TOKEN,
-											lesson: calEvent['id'],
-											user: user.id
-										},
-										success: onScheduleSuccess
-									});
-								},
-								cancel: function() {
-									$dialogContent.dialog("close");
-								}
-							};
+							if (!user.mornings || (user.mornings && calEvent.start.getHours() < 14 && calEvent.start.getHours() > 9)) {
+								buttons = {
+									'schedule class': function() {
+										$dialogContent.dialog("close");
+										$.ajax({
+											url: '/schedule_class',
+											type: 'post',
+											data: {
+												_token: CSRF_TOKEN,
+												lesson: calEvent['id'],
+												user: user.id
+											},
+											success: onScheduleSuccess
+										});
+									},
+									cancel: function() {
+										$dialogContent.dialog("close");
+									}
+								};
+							}
 						}
 						else {
 							$("#day_limit_span").empty();
