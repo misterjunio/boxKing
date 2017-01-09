@@ -14,7 +14,6 @@ $(document).ready(function() {
 			});
 
 			function onSuccess(data, status, xhr)	{
-				console.log("Returned data: ", data);
 				$('#calendar').weekCalendar("refresh");
 			}
 		}

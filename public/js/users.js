@@ -20,7 +20,6 @@ $(document).ready(function() {
 				success: onSuccess
 		});
 		function onSuccess(data, status, xhr)	{
-			console.log("Returned data: ", data);
 			$('#current_day_limit').text(value);
 			$('#edit_day_limit').show();
 			$('#current_day_limit').show();
@@ -58,7 +57,6 @@ $(document).ready(function() {
 				success: onSuccess
 		});
 		function onSuccess(data, status, xhr)	{
-			console.log("Returned data: ", data);
 			if (data) {
 				value = "done";
 			}
